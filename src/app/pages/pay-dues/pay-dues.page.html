@@ -1,0 +1,161 @@
+<ion-header class="ion-no-border">
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-button fill="clear" color="light" *ngIf="!selectedFlat" (click)="openMenu()">
+        <ion-icon name="menu-outline" slot="icon-only"></ion-icon>
+      </ion-button>
+      <ion-button fill="clear" color="light" *ngIf="selectedFlat" (click)="back()">
+        <ion-icon name="arrow-back-outline" slot="icon-only"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+    <ion-title>{{ selectedFlat ? 'Pay — ' + selectedFlat.flatNo : 'Pay Dues' }}</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true" class="pd-content">
+
+  <!-- ══ STEP 1 — SELECT FLAT ══ -->
+  <ng-container *ngIf="!selectedFlat">
+
+    <div class="pd-hero">
+      <div class="pdh-c1"></div><div class="pdh-c2"></div>
+      <div class="pdh-inner">
+        <div class="pdh-icon">💳</div>
+        <div class="pdh-title">Select Flat to Pay</div>
+        <div class="pdh-sub">Choose a flat to view & pay dues</div>
+      </div>
+      <ion-searchbar [(ngModel)]="searchTerm" placeholder="Search flat no. or owner..."
+        debounce="200" class="pd-searchbar"></ion-searchbar>
+      <ion-segment [(ngModel)]="selectedWing" class="pd-wing-seg">
+        <ion-segment-button value="ALL">All</ion-segment-button>
+        <ion-segment-button value="A">Wing A</ion-segment-button>
+        <ion-segment-button value="B">Wing B</ion-segment-button>
+      </ion-segment>
+    </div>
+
+    <div class="pd-list">
+      <div *ngFor="let flat of filteredFlats" class="pd-flat-row" (click)="selectFlat(flat)">
+        <div class="pfr-avatar" [class.pfr-due]="getTotalDue(flat) > 0">
+          {{ flat.flatNo.slice(-2) }}
+        </div>
+        <div class="pfr-info">
+          <div class="pfr-no">{{ flat.flatNo }} <span class="pfr-wing">Wing {{ flat.wing }}</span></div>
+          <div class="pfr-owner">{{ flat.ownerName || 'Owner not set' }}</div>
+          <div class="pfr-meta">{{ flat.type }} · ₹{{ flat.monthlyAmount | number }}/mo
+            <span *ngIf="flat.openingBalance > 0" class="pfr-ob">· OB ₹{{ flat.openingBalance | number }}</span>
+          </div>
+        </div>
+        <div class="pfr-right">
+          <span class="pfr-due-badge" *ngIf="getTotalDue(flat) > 0">₹{{ getTotalDue(flat) | number }}</span>
+          <span class="pfr-clear-badge" *ngIf="getTotalDue(flat) === 0">Clear</span>
+          <ion-icon name="chevron-forward-outline" class="pfr-arrow"></ion-icon>
+        </div>
+      </div>
+      <div style="height:80px"></div>
+    </div>
+
+  </ng-container>
+
+  <!-- ══ STEP 2 — PAY MONTHS ══ -->
+  <ng-container *ngIf="selectedFlat">
+
+    <!-- Flat summary hero -->
+    <div class="pd-flat-hero">
+      <div class="pfh-c1"></div>
+      <div class="pfh-body">
+        <div class="pfh-flat">{{ selectedFlat.flatNo }}</div>
+        <div class="pfh-owner">{{ selectedFlat.ownerName || 'Owner not set' }}</div>
+        <div class="pfh-meta">Wing {{ selectedFlat.wing }} · Floor {{ selectedFlat.floor }} · {{ selectedFlat.type }}</div>
+        <div class="pfh-stats">
+          <div class="pfhs">
+            <div class="pfhs-val">₹{{ selectedFlat.monthlyAmount | number }}</div>
+            <div class="pfhs-lbl">Monthly</div>
+          </div>
+          <div class="pfhs-div"></div>
+          <div class="pfhs">
+            <div class="pfhs-val" [class.ob-val]="selectedFlat.openingBalance > 0">
+              ₹{{ selectedFlat.openingBalance | number }}
+            </div>
+            <div class="pfhs-lbl">Opening Bal.</div>
+          </div>
+          <div class="pfhs-div"></div>
+          <div class="pfhs">
+            <div class="pfhs-val due-val">₹{{ getTotalDue(selectedFlat) | number }}</div>
+            <div class="pfhs-lbl">Total Due</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="pd-pay-body">
+
+      <!-- Unpaid months -->
+      <div *ngIf="unpaidMonths.length > 0">
+        <div class="pd-section-row">
+          <div class="pd-sec-label">Unpaid Months ({{ unpaidMonths.length }})</div>
+          <button class="pd-toggle-all" (click)="toggleAll(!allChecked)">
+            {{ allChecked ? 'Deselect All' : 'Select All' }}
+          </button>
+        </div>
+
+        <div class="pd-month-list">
+          <label *ngFor="let m of unpaidMonths" class="pd-month-row unpaid-row"
+                 [class.row-checked]="checkedMonths[m]">
+            <div class="pmr-check">
+              <div class="check-box" [class.checked]="checkedMonths[m]">
+                <ion-icon name="checkmark-outline" *ngIf="checkedMonths[m]"></ion-icon>
+              </div>
+            </div>
+            <div class="pmr-info">
+              <div class="pmr-month">{{ getMonthLabel(m) }}</div>
+              <div class="pmr-amount">₹{{ selectedFlat.monthlyAmount | number }}</div>
+            </div>
+            <div class="pmr-status unpaid-tag">UNPAID</div>
+            <input type="checkbox" [(ngModel)]="checkedMonths[m]" style="display:none">
+          </label>
+        </div>
+      </div>
+
+      <!-- Empty unpaid -->
+      <div *ngIf="unpaidMonths.length === 0" class="pd-all-clear">
+        <div class="pac-icon">🎉</div>
+        <div class="pac-title">All Paid!</div>
+        <div class="pac-sub">No pending months for this flat</div>
+      </div>
+
+      <!-- Paid months (collapsed reference) -->
+      <div *ngIf="paidMonths.length > 0">
+        <div class="pd-sec-label" style="margin-top:24px">Paid Months ({{ paidMonths.length }})</div>
+        <div class="pd-month-list">
+          <div *ngFor="let m of paidMonths" class="pd-month-row paid-row">
+            <div class="pmr-check">
+              <div class="check-box paid-check">
+                <ion-icon name="checkmark-outline"></ion-icon>
+              </div>
+            </div>
+            <div class="pmr-info">
+              <div class="pmr-month">{{ getMonthLabel(m) }}</div>
+              <div class="pmr-amount">₹{{ selectedFlat.monthlyAmount | number }}</div>
+            </div>
+            <div class="pmr-status paid-tag">PAID</div>
+          </div>
+        </div>
+      </div>
+
+      <div style="height:120px"></div>
+    </div>
+
+    <!-- Sticky pay bar -->
+    <div class="pd-pay-bar" *ngIf="selectedMonths.length > 0">
+      <div class="ppb-info">
+        <div class="ppb-count">{{ selectedMonths.length }} month{{ selectedMonths.length !== 1 ? 's' : '' }} selected</div>
+        <div class="ppb-total">₹{{ selectedTotal | number }}</div>
+      </div>
+      <button class="ppb-btn" (click)="paySelected()">
+        <ion-icon name="card-outline"></ion-icon> Pay Now
+      </button>
+    </div>
+
+  </ng-container>
+
+</ion-content>

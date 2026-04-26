@@ -1,0 +1,101 @@
+<ion-app>
+
+  <ion-menu contentId="layout-content" menuId="main-menu" type="overlay">
+    <ion-header>
+      <ion-toolbar color="primary"></ion-toolbar>
+    </ion-header>
+    <ion-content class="menu-content">
+      <div class="menu-hero">
+        <div class="menu-avatar">🏢</div>
+        <div class="menu-title">Society Maintenance</div>
+        <div class="menu-sub">Management System</div>
+      </div>
+      <div class="menu-nav">
+        <div class="menu-section-label">MAIN</div>
+        <button class="menu-item" [class.mi-active]="active==='dashboard'" (click)="go('dashboard')">
+          <span class="mi-icon" style="background:#ede9fe"><ion-icon name="grid-outline" style="color:#4f46e5"></ion-icon></span>
+          <span class="mi-label">Dashboard</span>
+          <ion-icon name="chevron-forward-outline" class="mi-arrow"></ion-icon>
+        </button>
+        <button class="menu-item" [class.mi-active]="active==='flats'" (click)="go('flats')">
+          <span class="mi-icon" style="background:#dbeafe"><ion-icon name="home-outline" style="color:#2563eb"></ion-icon></span>
+          <span class="mi-label">Mark Payments</span>
+          <ion-icon name="chevron-forward-outline" class="mi-arrow"></ion-icon>
+        </button>
+        <button class="menu-item" [class.mi-active]="active==='dues'" (click)="go('dues')">
+          <span class="mi-icon" style="background:#fee2e2"><ion-icon name="alert-circle-outline" style="color:#dc2626"></ion-icon></span>
+          <span class="mi-label">Past Dues</span>
+          <ion-icon name="chevron-forward-outline" class="mi-arrow"></ion-icon>
+        </button>
+        <button class="menu-item" [class.mi-active]="active==='pay-dues'" (click)="go('pay-dues')">
+          <span class="mi-icon" style="background:#d1fae5"><ion-icon name="card-outline" style="color:#059669"></ion-icon></span>
+          <span class="mi-label">Pay Dues</span>
+          <ion-icon name="chevron-forward-outline" class="mi-arrow"></ion-icon>
+        </button>
+        <button class="menu-item" [class.mi-active]="active==='receipt'" (click)="go('receipt')">
+          <span class="mi-icon" style="background:#d1fae5"><ion-icon name="receipt-outline" style="color:#059669"></ion-icon></span>
+          <span class="mi-label">Receipts</span>
+          <ion-icon name="chevron-forward-outline" class="mi-arrow"></ion-icon>
+        </button>
+        <button class="menu-item" [class.mi-active]="active==='expenses'" (click)="go('expenses')">
+          <span class="mi-icon" style="background:#fef3c7"><ion-icon name="wallet-outline" style="color:#d97706"></ion-icon></span>
+          <span class="mi-label">Expenses</span>
+          <ion-icon name="chevron-forward-outline" class="mi-arrow"></ion-icon>
+        </button>
+
+        <div class="menu-section-label" style="margin-top:16px">SOCIETY</div>
+        <button class="menu-item" [class.mi-active]="active==='vehicles'" (click)="go('vehicles')">
+          <span class="mi-icon" style="background:#fef3c7"><ion-icon name="car-outline" style="color:#d97706"></ion-icon></span>
+          <span class="mi-label">Vehicles</span>
+          <ion-icon name="chevron-forward-outline" class="mi-arrow"></ion-icon>
+        </button>
+        <button class="menu-item" [class.mi-active]="active==='notices'" (click)="go('notices')">
+          <span class="mi-icon" style="background:#fce7f3"><ion-icon name="megaphone-outline" style="color:#db2777"></ion-icon></span>
+          <span class="mi-label">Notices</span>
+          <ion-icon name="chevron-forward-outline" class="mi-arrow"></ion-icon>
+        </button>
+        <button class="menu-item" [class.mi-active]="active==='society-detail'" (click)="go('society-detail')">
+          <span class="mi-icon" style="background:#ede9fe"><ion-icon name="business-outline" style="color:#4f46e5"></ion-icon></span>
+          <span class="mi-label">Society Detail</span>
+          <ion-icon name="chevron-forward-outline" class="mi-arrow"></ion-icon>
+        </button>
+        <button class="menu-item" [class.mi-active]="active==='config'" (click)="go('config')">
+          <span class="mi-icon" style="background:#f1f5f9"><ion-icon name="settings-outline" style="color:#475569"></ion-icon></span>
+          <span class="mi-label">Configure Charges</span>
+          <ion-icon name="chevron-forward-outline" class="mi-arrow"></ion-icon>
+        </button>
+      </div>
+      <div class="menu-footer">v1.0.0 · Society Maintenance</div>
+    </ion-content>
+  </ion-menu>
+
+  <ion-router-outlet id="layout-content"></ion-router-outlet>
+
+  <div class="tab-bar">
+    <button class="tab-item" [class.active]="active==='dashboard'" (click)="go('dashboard')">
+      <ion-icon name="grid-outline"></ion-icon>
+      <span>Home</span>
+    </button>
+    <button class="tab-item" [class.active]="active==='flats'" (click)="go('flats')">
+      <ion-icon name="home-outline"></ion-icon>
+      <span>Flats</span>
+    </button>
+    <button class="tab-item" [class.active]="active==='dues'" (click)="go('dues')">
+      <ion-icon name="alert-circle-outline"></ion-icon>
+      <span>Dues</span>
+    </button>
+    <button class="tab-item" [class.active]="active==='pay-dues'" (click)="go('pay-dues')">
+      <ion-icon name="card-outline"></ion-icon>
+      <span>Pay</span>
+    </button>
+    <button class="tab-item" [class.active]="active==='receipt'" (click)="go('receipt')">
+      <ion-icon name="receipt-outline"></ion-icon>
+      <span>Receipts</span>
+    </button>
+    <button class="tab-item" [class.active]="active==='society-detail'" (click)="go('society-detail')">
+      <ion-icon name="business-outline"></ion-icon>
+      <span>Society</span>
+    </button>
+  </div>
+
+</ion-app>

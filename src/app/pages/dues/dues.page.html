@@ -1,0 +1,62 @@
+<ion-header class="ion-no-border">
+  <ion-toolbar>
+    <ion-buttons slot="start"><ion-button fill="clear" color="light" (click)="openMenu()"><ion-icon name="menu-outline" slot="icon-only"></ion-icon></ion-button></ion-buttons>
+    <ion-title>Past Dues</ion-title>
+  </ion-toolbar>
+</ion-header>
+<ion-content [fullscreen]="true" class="dues-content">
+  <div class="dues-hero">
+    <div class="dh-c1"></div><div class="dh-c2"></div>
+    <div class="dh-inner">
+      <div class="dh-label">Total Outstanding</div>
+      <div class="dh-amount">₹{{ totalOutstanding | number }}</div>
+      <div class="dh-sub">{{ filtered.length }} flat{{ filtered.length !== 1 ? 's' : '' }} with pending dues</div>
+    </div>
+    <ion-searchbar
+      [(ngModel)]="searchTerm"
+      placeholder="Search flat no. or owner..."
+      debounce="200"
+      class="dues-searchbar">
+    </ion-searchbar>
+    <div class="dh-seg-wrap">
+      <ion-segment [(ngModel)]="filterWing" (ionChange)="loadDues()" class="dues-seg">
+        <ion-segment-button value="ALL">All</ion-segment-button>
+        <ion-segment-button value="A">Wing A</ion-segment-button>
+        <ion-segment-button value="B">Wing B</ion-segment-button>
+      </ion-segment>
+    </div>
+  </div>
+  <div class="dues-body">
+    <div *ngIf="filtered.length === 0" class="empty-state">
+      <div class="es-icon">{{ searchTerm ? '🔍' : '🎉' }}</div>
+      <div class="es-title">{{ searchTerm ? 'No results' : 'All Clear!' }}</div>
+      <div class="es-sub">{{ searchTerm ? 'No dues found for "' + searchTerm + '"' : 'No pending dues found' }}</div>
+    </div>
+    <div *ngFor="let fd of filtered; let i = index" class="due-card">
+      <div class="dc-header">
+        <div class="dc-rank">#{{ i + 1 }}</div>
+        <div class="dc-info">
+          <div class="dc-flat">{{ fd.flat.flatNo }}</div>
+          <div class="dc-owner">{{ fd.flat.ownerName || 'Owner not set' }}</div>
+          <div class="dc-meta">Wing {{ fd.flat.wing }} · {{ fd.flat.type }}
+            <span *ngIf="fd.flat.openingBalance > 0" class="dc-ob"> · OB ₹{{ fd.flat.openingBalance | number }}</span>
+          </div>
+        </div>
+        <div class="dc-right">
+          <div class="dc-amount">₹{{ fd.totalDue | number }}</div>
+          <div class="dc-months">{{ fd.items.length }} item(s)</div>
+        </div>
+      </div>
+      <div class="dc-chips">
+        <span *ngFor="let item of fd.items"
+              class="dc-chip"
+              [class.dc-chip-charge]="item.isCharge">
+          {{ item.label }} · ₹{{ item.amount | number }}
+        </span>
+      </div>
+      <button class="dc-pay-btn" (click)="payDue(fd)"><ion-icon name="card-outline"></ion-icon> Pay Dues</button>
+      <button class="dc-goto-btn" (click)="go('pay-dues')"><ion-icon name="open-outline"></ion-icon> Pay via Pay Page</button>
+    </div>
+    <div style="height:80px"></div>
+  </div>
+</ion-content>

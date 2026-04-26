@@ -1,0 +1,111 @@
+.exp-content { --background: #f0f2f8; }
+
+.exp-hero {
+  background: linear-gradient(160deg, #d97706 0%, #f59e0b 55%, #fbbf24 100%);
+  padding: 20px 20px 28px; position: relative; overflow: hidden;
+  .eh-c1 { position: absolute; top: -40px; right: -40px; width: 160px; height: 160px; border-radius: 50%; background: rgba(255,255,255,0.08); }
+  .eh-c2 { position: absolute; bottom: -60px; left: -20px; width: 200px; height: 200px; border-radius: 50%; background: rgba(255,255,255,0.05); }
+  .eh-inner { position: relative; z-index: 1; text-align: center; margin-bottom: 20px; color: white; }
+  .eh-label { font-size: 11px; opacity: 0.75; text-transform: uppercase; letter-spacing: 1.5px; font-weight: 700; }
+  .eh-amount { font-size: 36px; font-weight: 900; margin: 6px 0 4px; }
+  .eh-count { font-size: 13px; opacity: 0.8; }
+  .eh-month-sel {
+    position: relative; z-index: 1;
+    background: rgba(255,255,255,0.2); border: 1px solid rgba(255,255,255,0.3);
+    border-radius: 12px; color: white; padding: 10px 14px;
+    width: 100%; font-size: 14px; font-weight: 700;
+  }
+}
+
+// ── Inline Add Form ──
+.exp-form-card {
+  background: white; border-radius: 20px; margin: 16px 16px 0;
+  padding: 20px; box-shadow: 0 4px 24px rgba(0,0,0,0.1);
+  border-top: 4px solid #f59e0b;
+
+  .efc-title {
+    font-size: 17px; font-weight: 900; color: #1e293b; margin-bottom: 18px;
+  }
+}
+
+.ef-group { margin-bottom: 16px; }
+
+.ef-label {
+  font-size: 11px; font-weight: 700; color: #64748b;
+  text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 6px;
+}
+
+.ef-input {
+  --background: #f8fafc; --color: #1e293b;
+  --placeholder-color: #cbd5e1;
+  --padding-start: 14px; --padding-end: 14px;
+  border-radius: 12px; border: 1.5px solid #e2e8f0;
+  font-size: 15px; font-weight: 600; min-height: 48px;
+}
+
+.ef-cat-grid {
+  display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px;
+}
+
+.ef-cat-btn {
+  display: flex; flex-direction: column; align-items: center; gap: 4px;
+  background: #f8fafc; border: 1.5px solid #e2e8f0; border-radius: 12px;
+  padding: 10px 4px; cursor: pointer; font-size: 10px; font-weight: 700;
+  color: #64748b; transition: all 0.15s;
+  span:first-child { font-size: 20px; }
+  &.cat-active {
+    background: #fef3c7; border-color: #f59e0b; color: #d97706;
+    box-shadow: 0 2px 8px rgba(245,158,11,0.25);
+  }
+  &:active { transform: scale(0.95); }
+}
+
+.ef-actions {
+  display: flex; gap: 10px; margin-top: 20px;
+  .ef-btn {
+    flex: 1; height: 50px; border: none; border-radius: 14px;
+    font-size: 14px; font-weight: 800; cursor: pointer;
+    display: flex; align-items: center; justify-content: center; gap: 6px;
+    transition: transform 0.15s;
+    &:active { transform: scale(0.97); }
+    &.cancel { background: #f1f5f9; color: #64748b; }
+    &.save {
+      background: linear-gradient(135deg, #d97706, #f59e0b);
+      color: white; box-shadow: 0 4px 16px rgba(217,119,6,0.35);
+      ion-icon { font-size: 18px; }
+    }
+  }
+}
+
+// ── List ──
+.exp-body { padding: 16px; }
+
+.empty-state {
+  text-align: center; padding: 60px 24px;
+  .es-icon { font-size: 52px; margin-bottom: 14px; }
+  .es-title { font-size: 18px; font-weight: 800; color: #1e293b; }
+  .es-sub { font-size: 13px; color: #94a3b8; margin-top: 6px; }
+}
+
+.exp-card {
+  display: flex; align-items: center; gap: 12px;
+  background: white; border-radius: 16px; padding: 14px 16px;
+  margin-bottom: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.06);
+  border-left: 4px solid #f59e0b;
+
+  .ec-left { .ec-cat-icon { font-size: 28px; } }
+  .ec-center { flex: 1; min-width: 0; }
+  .ec-title { font-size: 15px; font-weight: 800; color: #1e293b; }
+  .ec-meta { display: flex; gap: 8px; margin-top: 3px; }
+  .ec-cat { font-size: 11px; font-weight: 700; background: #fef3c7; color: #d97706; padding: 2px 8px; border-radius: 20px; }
+  .ec-date { font-size: 11px; color: #94a3b8; }
+  .ec-note { font-size: 12px; color: #64748b; margin-top: 4px; }
+  .ec-right { display: flex; flex-direction: column; align-items: flex-end; gap: 8px; }
+  .ec-amount { font-size: 17px; font-weight: 900; color: #ef4444; }
+  .ec-del {
+    width: 32px; height: 32px; border: none; border-radius: 8px;
+    background: #fee2e2; color: #dc2626; cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    ion-icon { font-size: 15px; }
+  }
+}

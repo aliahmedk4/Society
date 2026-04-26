@@ -34,4 +34,14 @@
 
 /* @import "@ionic/angular/css/palettes/dark.always.css"; */
 /* @import "@ionic/angular/css/palettes/dark.class.css"; */
-@import "@ionic/angular/css/palettes/dark.system.css";
+/* @import "@ionic/angular/css/palettes/dark.system.css"; */
+
+/* Global toolbar gradient — applied to all pages */
+ion-toolbar {
+  --background: linear-gradient(135deg, #4f46e5, #7c3aed);
+  --color: white;
+  --border-color: transparent;
+}
+ion-toolbar ion-title { color: white; font-weight: 800; }
+ion-toolbar ion-button { --color: white; }
+ion-toolbar ion-back-button { --color: white; }

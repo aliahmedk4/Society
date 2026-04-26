@@ -1,0 +1,60 @@
+<ion-header class="ion-no-border">
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-button fill="clear" color="light" *ngIf="!selectedFlat" (click)="openMenu()"><ion-icon name="menu-outline" slot="icon-only"></ion-icon></ion-button>
+      <ion-button fill="clear" color="light" *ngIf="selectedFlat" (click)="selectedFlat = null"><ion-icon name="arrow-back-outline" slot="icon-only"></ion-icon></ion-button>
+    </ion-buttons>
+    <ion-title>{{ selectedFlat ? selectedFlat.flatNo : 'Receipts' }}</ion-title>
+  </ion-toolbar>
+</ion-header>
+<ion-content [fullscreen]="true" class="receipt-content">
+  <div *ngIf="!selectedFlat">
+    <div class="receipt-hero">
+      <div class="rh-c1"></div><div class="rh-c2"></div>
+      <div class="rh-inner"><div class="rh-icon">🧾</div><div class="rh-title">Receipts</div><div class="rh-sub">{{ flats.length }} flats · tap to view history</div></div>
+      <div class="rh-search"><ion-searchbar [(ngModel)]="searchTerm" placeholder="Search flat or owner..." debounce="300" class="rh-searchbar"></ion-searchbar></div>
+    </div>
+    <div class="receipt-list">
+      <div *ngFor="let flat of filteredFlats" class="rli-card" (click)="selectFlat(flat)">
+        <div class="rli-avatar" [class.rli-due]="getTotalDue(flat) > 0">{{ flat.flatNo.slice(-2) }}</div>
+        <div class="rli-info">
+          <div class="rli-flat">{{ flat.flatNo }} <span class="rli-wing">Wing {{ flat.wing }}</span></div>
+          <div class="rli-owner">{{ flat.ownerName || 'Owner not set' }}</div>
+          <div class="rli-meta">Floor {{ flat.floor }} · {{ flat.type }} · ₹{{ flat.monthlyAmount | number }}/mo</div>
+        </div>
+        <div class="rli-right">
+          <span class="rli-badge" [class.rli-clear]="getTotalDue(flat) <= 0" [class.rli-owe]="getTotalDue(flat) > 0">{{ getTotalDue(flat) > 0 ? '₹' + (getTotalDue(flat) | number) : 'Clear' }}</span>
+          <ion-icon name="chevron-forward-outline" class="rli-arrow"></ion-icon>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div *ngIf="selectedFlat">
+    <div class="rdet-hero">
+      <div class="rdh-c1"></div>
+      <div class="rdh-inner">
+        <div class="rdh-flat">{{ selectedFlat.flatNo }}</div>
+        <div class="rdh-owner">{{ selectedFlat.ownerName || 'Owner not set' }}</div>
+        <div class="rdh-meta">Wing {{ selectedFlat.wing }} · Floor {{ selectedFlat.floor }} · {{ selectedFlat.type }}</div>
+        <div class="rdh-stats">
+          <div class="rdhs"><div class="rdhs-val">₹{{ selectedFlat.monthlyAmount | number }}</div><div class="rdhs-lbl">Monthly</div></div>
+          <div class="rdhs-div"></div>
+          <div class="rdhs"><div class="rdhs-val" [class.rdhs-due]="getTotalDue(selectedFlat) > 0">₹{{ getTotalDue(selectedFlat) | number }}</div><div class="rdhs-lbl">Total Due</div></div>
+          <div class="rdhs-div"></div>
+          <div class="rdhs"><div class="rdhs-val">{{ payments.length }}</div><div class="rdhs-lbl">Payments</div></div>
+        </div>
+      </div>
+    </div>
+    <div class="rdet-body">
+      <div class="rdet-label">Payment History</div>
+      <div *ngIf="payments.length === 0" class="empty-state"><div class="es-icon">📭</div><div class="es-title">No payments yet</div><div class="es-sub">Payments will appear here once recorded</div></div>
+      <div *ngFor="let p of payments" class="pay-card">
+        <div class="pc-top"><div class="pc-month">{{ getMonthLabel(p.month) }}</div><div class="pc-amount">₹{{ p.amountPaid | number }}</div></div>
+        <div class="pc-row"><span class="pc-date">{{ p.paidDate | date:'dd MMM yyyy' }}</span><span class="pc-rcpt">{{ p.receiptNo }}</span></div>
+        <div class="pc-note" *ngIf="p.note">{{ p.note }}</div>
+        <button class="pc-dl-btn" (click)="printReceipt(p)"><ion-icon name="download-outline"></ion-icon> Download Receipt</button>
+      </div>
+    </div>
+  </div>
+  <div style="height:80px"></div>
+</ion-content>

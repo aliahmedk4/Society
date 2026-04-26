@@ -1,0 +1,191 @@
+<ion-header class="ion-no-border">
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-button fill="clear" color="light" (click)="openMenu()">
+        <ion-icon name="menu-outline" slot="icon-only"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+    <ion-buttons slot="end">
+      <ion-button fill="clear" color="light" (click)="go('notices')">
+        <ion-icon name="notifications-outline" slot="icon-only"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true" class="dash-content">
+
+  <div class="dash-hero">
+    <div class="dh-circles"><div class="dh-c1"></div><div class="dh-c2"></div></div>
+    <div class="dh-greeting">Society Maintenance</div>
+    <div class="dh-month">{{ monthLabel }}</div>
+    <div class="dh-collection">
+      <div class="dh-col-label">This Month Collected</div>
+      <div class="dh-col-amount">₹{{ totalCollected | number }}</div>
+    </div>
+    <div class="dh-progress-wrap">
+      <div class="dh-progress-track">
+        <div class="dh-progress-fill" [style.width]="paidPercent + '%'"></div>
+      </div>
+      <div class="dh-progress-info">
+        <span>{{ paidCount }} paid</span>
+        <span class="dh-percent">{{ paidPercent }}%</span>
+        <span>{{ unpaidCount }} pending</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="dash-body">
+
+    <div class="stats-row">
+      <div class="stat-pill green">
+        <div class="sp-icon">✅</div>
+        <div class="sp-info"><div class="sp-val">{{ paidCount }}</div><div class="sp-lbl">Paid</div></div>
+      </div>
+      <div class="stat-pill red">
+        <div class="sp-icon">⏳</div>
+        <div class="sp-info"><div class="sp-val">{{ unpaidCount }}</div><div class="sp-lbl">Unpaid</div></div>
+      </div>
+      <div class="stat-pill orange" (click)="go('dues')" style="cursor:pointer">
+        <div class="sp-icon">⚠️</div>
+        <div class="sp-info"><div class="sp-val">₹{{ totalOutstanding | number }}</div><div class="sp-lbl">Dues</div></div>
+      </div>
+    </div>
+
+    <div class="sec-label">This Month Finance</div>
+    <div class="finance-row">
+      <div class="fin-card income" (click)="go('receipt')">
+        <div class="fin-icon">💰</div>
+        <div class="fin-val">₹{{ totalCollected | number }}</div>
+        <div class="fin-lbl">Income</div>
+      </div>
+      <div class="fin-card expense" (click)="go('expenses')">
+        <div class="fin-icon">💸</div>
+        <div class="fin-val">₹{{ monthExpenses | number }}</div>
+        <div class="fin-lbl">Expenses</div>
+      </div>
+      <div class="fin-card" [class.net-pos]="netBalance>=0" [class.net-neg]="netBalance<0">
+        <div class="fin-icon">📊</div>
+        <div class="fin-val">₹{{ netBalance | number }}</div>
+        <div class="fin-lbl">Net</div>
+      </div>
+    </div>
+
+    <div class="sec-label">Society Fund Overview</div>
+    <div class="fund-card" (click)="go('config')">
+      <div class="fund-row">
+        <div class="fund-item">
+          <div class="fi-icon" style="background:#fee2e2">📋</div>
+          <div class="fi-info">
+            <div class="fi-lbl">Total Dues</div>
+            <div class="fi-val red">₹{{ fundTotalDues | number }}</div>
+          </div>
+        </div>
+        <div class="fund-item">
+          <div class="fi-icon" style="background:#d1fae5">✅</div>
+          <div class="fi-info">
+            <div class="fi-lbl">Payments Marked</div>
+            <div class="fi-val green">₹{{ fundPaymentsMarked | number }}</div>
+          </div>
+        </div>
+      </div>
+      <div class="fund-divider"></div>
+      <div class="fund-row">
+        <div class="fund-item">
+          <div class="fi-icon" style="background:#fef3c7">⏳</div>
+          <div class="fi-info">
+            <div class="fi-lbl">Pending</div>
+            <div class="fi-val orange">₹{{ fundPending | number }}</div>
+          </div>
+        </div>
+        <div class="fund-item" (click)="$event.stopPropagation(); go('config')">
+          <div class="fi-icon" style="background:#ede9fe">🏦</div>
+          <div class="fi-info">
+            <div class="fi-lbl">Bank Balance
+              <span class="fi-edit-hint">tap to update</span>
+            </div>
+            <div class="fi-val indigo">₹{{ fundBankBalance | number }}</div>
+          </div>
+        </div>
+      </div>
+      <div class="fund-note" *ngIf="fundLastUpdated">
+        Bank balance updated: {{ fundLastUpdated | date:'dd MMM yyyy' }}
+      </div>
+    </div>
+
+    <div class="sec-label">Quick Actions</div>
+    <div class="actions-row">
+      <button class="act-card" (click)="go('flats')">
+        <div class="ac-icon-wrap" style="background:linear-gradient(135deg,#4f46e5,#7c3aed)">
+          <ion-icon name="cash-outline"></ion-icon>
+        </div>
+        <div class="ac-lbl">Payments</div>
+      </button>
+      <button class="act-card" (click)="go('dues')">
+        <div class="ac-icon-wrap" style="background:linear-gradient(135deg,#ef4444,#dc2626)">
+          <ion-icon name="alert-circle-outline"></ion-icon>
+        </div>
+        <div class="ac-lbl">Dues</div>
+      </button>
+      <button class="act-card" (click)="go('expenses')">
+        <div class="ac-icon-wrap" style="background:linear-gradient(135deg,#f59e0b,#d97706)">
+          <ion-icon name="wallet-outline"></ion-icon>
+        </div>
+        <div class="ac-lbl">Expenses</div>
+      </button>
+      <button class="act-card" (click)="go('vehicles')">
+        <div class="ac-icon-wrap" style="background:linear-gradient(135deg,#0ea5e9,#0284c7)">
+          <ion-icon name="car-outline"></ion-icon>
+        </div>
+        <div class="ac-lbl">Vehicles</div>
+      </button>
+    </div>
+
+    <div class="sec-label">Wing Summary</div>
+    <div class="wings-card">
+      <div class="wing-row">
+        <div class="wr-badge indigo">A</div>
+        <div class="wr-info">
+          <div class="wr-name">Wing A</div>
+          <div class="wr-bar-wrap"><div class="wr-bar-fill indigo-fill" [style.width]="(wingASummary.paid/28*100)+'%'"></div></div>
+        </div>
+        <div class="wr-counts">
+          <span class="wrc paid">{{ wingASummary.paid }}</span><span class="wrc-sep">/</span><span class="wrc total">28</span>
+        </div>
+      </div>
+      <div class="wing-divider"></div>
+      <div class="wing-row">
+        <div class="wr-badge sky">B</div>
+        <div class="wr-info">
+          <div class="wr-name">Wing B</div>
+          <div class="wr-bar-wrap"><div class="wr-bar-fill sky-fill" [style.width]="(wingBSummary.paid/28*100)+'%'"></div></div>
+        </div>
+        <div class="wr-counts">
+          <span class="wrc paid">{{ wingBSummary.paid }}</span><span class="wrc-sep">/</span><span class="wrc total">28</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="sec-label-row">
+      <span class="sec-label" style="margin:0">Notices</span>
+      <button class="see-all" (click)="go('notices')">View All →</button>
+    </div>
+
+    <div *ngIf="recentNotices.length === 0" class="no-notice-card" (click)="go('notices')">
+      <ion-icon name="megaphone-outline"></ion-icon>
+      <span>No notices yet — tap to post one</span>
+    </div>
+
+    <div *ngFor="let n of recentNotices" class="notice-row" [class.urgent-row]="n.priority==='urgent'" (click)="go('notices')">
+      <div class="nr-left" [class.urgent-dot]="n.priority==='urgent'"></div>
+      <div class="nr-body">
+        <div class="nr-title">{{ n.title }}</div>
+        <div class="nr-date">{{ n.date | date:'dd MMM yyyy' }}</div>
+      </div>
+      <div class="nr-tag">{{ n.priority === 'urgent' ? '🚨' : '📢' }}</div>
+    </div>
+
+    <div style="height:80px"></div>
+  </div>
+
+</ion-content>

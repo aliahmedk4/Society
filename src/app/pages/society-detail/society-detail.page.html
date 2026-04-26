@@ -1,0 +1,245 @@
+<ion-header class="ion-no-border">
+  <ion-toolbar>
+    <ion-title class="sd-toolbar-title">Society Detail</ion-title>
+    <ion-buttons slot="end">
+      <ion-button fill="clear" color="light" *ngIf="!editMode" (click)="startEdit()">
+        <ion-icon name="create-outline" slot="icon-only"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true" class="sd-content">
+
+  <!-- ── VIEW MODE ── -->
+  <ng-container *ngIf="!editMode">
+
+    <!-- Hero Banner -->
+    <div class="sd-hero">
+      <div class="sd-hero-bg"></div>
+      <div class="sd-hero-circles">
+        <div class="shc1"></div><div class="shc2"></div><div class="shc3"></div>
+      </div>
+      <div class="sd-hero-body">
+        <div class="sd-avatar">🏢</div>
+        <div class="sd-name">{{ detail.name }}</div>
+        <div class="sd-address">{{ detail.address }}</div>
+        <div class="sd-city">{{ detail.city }}</div>
+        <div class="sd-reg-badge">Reg: {{ detail.registrationNo }}</div>
+      </div>
+    </div>
+
+    <!-- Stats Strip -->
+    <div class="sd-stats-strip">
+      <div class="sds-item">
+        <div class="sds-val">{{ detail.totalFlats }}</div>
+        <div class="sds-lbl">Flats</div>
+      </div>
+      <div class="sds-divider"></div>
+      <div class="sds-item">
+        <div class="sds-val">{{ detail.totalWings }}</div>
+        <div class="sds-lbl">Wings</div>
+      </div>
+      <div class="sds-divider"></div>
+      <div class="sds-item">
+        <div class="sds-val">{{ detail.floorsPerWing }}</div>
+        <div class="sds-lbl">Floors</div>
+      </div>
+      <div class="sds-divider"></div>
+      <div class="sds-item">
+        <div class="sds-val">{{ detail.established }}</div>
+        <div class="sds-lbl">Est.</div>
+      </div>
+    </div>
+
+    <div class="sd-body">
+
+      <!-- Committee -->
+      <div class="sd-section-label">Committee Members</div>
+      <div class="sd-committee-card">
+        <div class="cm-row">
+          <div class="cm-avatar" style="background:linear-gradient(135deg,#4f46e5,#7c3aed)">
+            <ion-icon name="person-outline"></ion-icon>
+          </div>
+          <div class="cm-info">
+            <div class="cm-role">Chairperson</div>
+            <div class="cm-name">{{ detail.chairperson }}</div>
+          </div>
+          <div class="cm-badge chair">Chair</div>
+        </div>
+        <div class="cm-divider"></div>
+        <div class="cm-row">
+          <div class="cm-avatar" style="background:linear-gradient(135deg,#0ea5e9,#0284c7)">
+            <ion-icon name="person-outline"></ion-icon>
+          </div>
+          <div class="cm-info">
+            <div class="cm-role">Secretary</div>
+            <div class="cm-name">{{ detail.secretary }}</div>
+          </div>
+          <div class="cm-badge sec">Sec</div>
+        </div>
+        <div class="cm-divider"></div>
+        <div class="cm-row">
+          <div class="cm-avatar" style="background:linear-gradient(135deg,#10b981,#059669)">
+            <ion-icon name="person-outline"></ion-icon>
+          </div>
+          <div class="cm-info">
+            <div class="cm-role">Treasurer</div>
+            <div class="cm-name">{{ detail.treasurer }}</div>
+          </div>
+          <div class="cm-badge treas">Treas</div>
+        </div>
+      </div>
+
+      <!-- Contact -->
+      <div class="sd-section-label">Contact Info</div>
+      <div class="sd-info-card">
+        <div class="ic-row">
+          <div class="ic-icon" style="background:#ede9fe"><ion-icon name="call-outline" style="color:#4f46e5"></ion-icon></div>
+          <div class="ic-text">
+            <div class="ic-label">Phone</div>
+            <div class="ic-val">{{ detail.phone }}</div>
+          </div>
+        </div>
+        <div class="ic-divider"></div>
+        <div class="ic-row">
+          <div class="ic-icon" style="background:#dbeafe"><ion-icon name="mail-outline" style="color:#2563eb"></ion-icon></div>
+          <div class="ic-text">
+            <div class="ic-label">Email</div>
+            <div class="ic-val">{{ detail.email }}</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Structure -->
+      <div class="sd-section-label">Building Structure</div>
+      <div class="sd-structure-grid">
+        <div class="sg-card" style="border-top:3px solid #4f46e5">
+          <div class="sg-icon">🏗️</div>
+          <div class="sg-val">{{ detail.totalWings }}</div>
+          <div class="sg-lbl">Wings</div>
+        </div>
+        <div class="sg-card" style="border-top:3px solid #0ea5e9">
+          <div class="sg-icon">🏢</div>
+          <div class="sg-val">{{ detail.floorsPerWing }}</div>
+          <div class="sg-lbl">Floors/Wing</div>
+        </div>
+        <div class="sg-card" style="border-top:3px solid #10b981">
+          <div class="sg-icon">🚪</div>
+          <div class="sg-val">{{ detail.flatsPerFloor }}</div>
+          <div class="sg-lbl">Flats/Floor</div>
+        </div>
+        <div class="sg-card" style="border-top:3px solid #f59e0b">
+          <div class="sg-icon">🏠</div>
+          <div class="sg-val">{{ detail.totalFlats }}</div>
+          <div class="sg-lbl">Total Flats</div>
+        </div>
+      </div>
+
+      <!-- Amenities -->
+      <div class="sd-section-label">Amenities</div>
+      <div class="sd-amenities-wrap">
+        <div class="am-chip" *ngFor="let a of detail.amenities">{{ a }}</div>
+      </div>
+
+      <div style="height:32px"></div>
+    </div>
+  </ng-container>
+
+  <!-- ── EDIT MODE ── -->
+  <ng-container *ngIf="editMode">
+    <div class="sd-edit-header">
+      <div class="seh-title">Edit Society Details</div>
+      <div class="seh-sub">Update your society information</div>
+    </div>
+
+    <div class="sd-edit-body">
+
+      <div class="ef-group">
+        <div class="ef-label">Society Name</div>
+        <ion-input class="ef-input" [(ngModel)]="editData.name" placeholder="Society name"></ion-input>
+      </div>
+      <div class="ef-group">
+        <div class="ef-label">Address</div>
+        <ion-input class="ef-input" [(ngModel)]="editData.address" placeholder="Street address"></ion-input>
+      </div>
+      <div class="ef-group">
+        <div class="ef-label">City & PIN</div>
+        <ion-input class="ef-input" [(ngModel)]="editData.city" placeholder="City, State - PIN"></ion-input>
+      </div>
+      <div class="ef-group">
+        <div class="ef-label">Registration No.</div>
+        <ion-input class="ef-input" [(ngModel)]="editData.registrationNo" placeholder="Reg number"></ion-input>
+      </div>
+      <div class="ef-group">
+        <div class="ef-label">Established Year</div>
+        <ion-input class="ef-input" [(ngModel)]="editData.established" placeholder="e.g. 2010"></ion-input>
+      </div>
+
+      <div class="ef-section-label">Committee</div>
+      <div class="ef-group">
+        <div class="ef-label">Chairperson</div>
+        <ion-input class="ef-input" [(ngModel)]="editData.chairperson" placeholder="Name"></ion-input>
+      </div>
+      <div class="ef-group">
+        <div class="ef-label">Secretary</div>
+        <ion-input class="ef-input" [(ngModel)]="editData.secretary" placeholder="Name"></ion-input>
+      </div>
+      <div class="ef-group">
+        <div class="ef-label">Treasurer</div>
+        <ion-input class="ef-input" [(ngModel)]="editData.treasurer" placeholder="Name"></ion-input>
+      </div>
+
+      <div class="ef-section-label">Contact</div>
+      <div class="ef-group">
+        <div class="ef-label">Phone</div>
+        <ion-input class="ef-input" [(ngModel)]="editData.phone" placeholder="+91 XXXXX XXXXX"></ion-input>
+      </div>
+      <div class="ef-group">
+        <div class="ef-label">Email</div>
+        <ion-input class="ef-input" [(ngModel)]="editData.email" placeholder="email@society.in"></ion-input>
+      </div>
+
+      <div class="ef-section-label">Structure</div>
+      <div class="ef-row">
+        <div class="ef-group ef-half">
+          <div class="ef-label">Wings</div>
+          <ion-input class="ef-input" type="number" [(ngModel)]="editData.totalWings"></ion-input>
+        </div>
+        <div class="ef-group ef-half">
+          <div class="ef-label">Floors/Wing</div>
+          <ion-input class="ef-input" type="number" [(ngModel)]="editData.floorsPerWing"></ion-input>
+        </div>
+      </div>
+      <div class="ef-row">
+        <div class="ef-group ef-half">
+          <div class="ef-label">Flats/Floor</div>
+          <ion-input class="ef-input" type="number" [(ngModel)]="editData.flatsPerFloor"></ion-input>
+        </div>
+        <div class="ef-group ef-half">
+          <div class="ef-label">Total Flats</div>
+          <ion-input class="ef-input" type="number" [(ngModel)]="editData.totalFlats"></ion-input>
+        </div>
+      </div>
+
+      <div class="ef-section-label">Amenities</div>
+      <div class="sd-amenities-wrap" style="margin-bottom:12px">
+        <div class="am-chip editable" *ngFor="let a of editData.amenities; let i=index">
+          {{ a }} <span class="am-remove" (click)="removeAmenity(i)">✕</span>
+        </div>
+      </div>
+      <div class="ef-add-row">
+        <ion-input class="ef-input" [(ngModel)]="amenityInput" placeholder="Add amenity..." (keyup.enter)="addAmenity()"></ion-input>
+        <button class="ef-add-btn" (click)="addAmenity()">Add</button>
+      </div>
+
+      <div class="ef-actions">
+        <button class="ef-btn cancel" (click)="cancel()">Cancel</button>
+        <button class="ef-btn save" (click)="save()">Save Changes</button>
+      </div>
+
+      <div style="height:32px"></div>
+    </div>
+  </ng-container>
+
+</ion-content>

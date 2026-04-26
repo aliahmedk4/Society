@@ -1,0 +1,101 @@
+<ion-header class="ion-no-border">
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-button fill="clear" color="light" (click)="openMenu()">
+        <ion-icon name="menu-outline" slot="icon-only"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+    <ion-title>Expenses</ion-title>
+    <ion-buttons slot="end">
+      <ion-button fill="clear" color="light" (click)="openForm()" *ngIf="!showForm">
+        <ion-icon name="add-outline" slot="icon-only"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true" class="exp-content">
+
+  <!-- Hero -->
+  <div class="exp-hero">
+    <div class="eh-c1"></div><div class="eh-c2"></div>
+    <div class="eh-inner">
+      <div class="eh-label">Total This Month</div>
+      <div class="eh-amount">₹{{ totalFiltered | number }}</div>
+      <div class="eh-count">{{ filtered.length }} expense{{ filtered.length !== 1 ? 's' : '' }}</div>
+    </div>
+    <ion-select [(ngModel)]="filterMonth" interface="action-sheet" class="eh-month-sel">
+      <ion-select-option *ngFor="let m of allMonths" [value]="m">{{ getMonthLabel(m) }}</ion-select-option>
+    </ion-select>
+  </div>
+
+  <!-- ── ADD FORM ── -->
+  <div class="exp-form-card" *ngIf="showForm">
+    <div class="efc-title">Add Expense</div>
+
+    <div class="ef-group">
+      <div class="ef-label">Title *</div>
+      <ion-input class="ef-input" [(ngModel)]="form.title" placeholder="e.g. Lift Repair"></ion-input>
+    </div>
+
+    <div class="ef-group">
+      <div class="ef-label">Amount (₹) *</div>
+      <ion-input class="ef-input" type="number" [(ngModel)]="form.amount" placeholder="0"></ion-input>
+    </div>
+
+    <div class="ef-group">
+      <div class="ef-label">Category</div>
+      <div class="ef-cat-grid">
+        <button *ngFor="let c of categories"
+                class="ef-cat-btn"
+                [class.cat-active]="form.category === c"
+                (click)="form.category = c">
+          <span>{{ getCatIcon(c) }}</span>
+          <span>{{ c }}</span>
+        </button>
+      </div>
+    </div>
+
+    <div class="ef-group">
+      <div class="ef-label">Note (optional)</div>
+      <ion-input class="ef-input" [(ngModel)]="form.note" placeholder="Any note..."></ion-input>
+    </div>
+
+    <div class="ef-actions">
+      <button class="ef-btn cancel" (click)="cancelForm()">Cancel</button>
+      <button class="ef-btn save" (click)="saveExpense()">
+        <ion-icon name="checkmark-outline"></ion-icon> Add Expense
+      </button>
+    </div>
+  </div>
+
+  <!-- List -->
+  <div class="exp-body">
+    <div *ngIf="filtered.length === 0 && !showForm" class="empty-state">
+      <div class="es-icon">💸</div>
+      <div class="es-title">No expenses yet</div>
+      <div class="es-sub">Tap + to add an expense</div>
+    </div>
+
+    <div *ngFor="let e of filtered" class="exp-card">
+      <div class="ec-left"><div class="ec-cat-icon">{{ getCatIcon(e.category) }}</div></div>
+      <div class="ec-center">
+        <div class="ec-title">{{ e.title }}</div>
+        <div class="ec-meta">
+          <span class="ec-cat">{{ e.category }}</span>
+          <span class="ec-date">{{ getMonthLabel(e.date) }}</span>
+        </div>
+        <div class="ec-note" *ngIf="e.note">{{ e.note }}</div>
+      </div>
+      <div class="ec-right">
+        <div class="ec-amount">₹{{ e.amount | number }}</div>
+        <button class="ec-del" (click)="deleteExpense(e)">
+          <ion-icon name="trash-outline"></ion-icon>
+        </button>
+      </div>
+    </div>
+
+    <div style="height:80px"></div>
+  </div>
+
+</ion-content>

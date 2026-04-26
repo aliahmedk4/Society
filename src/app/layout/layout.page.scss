@@ -1,0 +1,59 @@
+ion-app { display: flex; flex-direction: column; }
+ion-router-outlet { flex: 1; position: relative; }
+
+.tab-bar {
+  position: fixed; bottom: 0; left: 0; right: 0;
+  height: 60px; display: flex;
+  background: #fff; border-top: 1px solid #e2e8f0;
+  box-shadow: 0 -4px 20px rgba(0,0,0,0.08); z-index: 9999;
+
+  .tab-item {
+    flex: 1; display: flex; flex-direction: column;
+    align-items: center; justify-content: center; gap: 3px;
+    background: none; border: none; cursor: pointer;
+    color: #94a3b8; font-size: 10px; font-weight: 700;
+    transition: color 0.2s;
+    ion-icon { font-size: 22px; }
+    &.active { color: #4f46e5; }
+  }
+}
+
+.menu-content { --background: #f8fafc; }
+
+.menu-hero {
+  background: linear-gradient(160deg, #4f46e5, #7c3aed);
+  padding: 48px 24px 28px; text-align: center; color: white;
+  .menu-avatar { font-size: 48px; margin-bottom: 8px; }
+  .menu-title { font-size: 17px; font-weight: 800; }
+  .menu-sub { font-size: 12px; opacity: 0.65; margin-top: 4px; }
+}
+
+.menu-nav { padding: 16px 12px 80px; }
+
+.menu-section-label {
+  font-size: 10px; font-weight: 800; color: #94a3b8;
+  letter-spacing: 1.8px; padding: 0 6px; margin-bottom: 8px;
+}
+
+.menu-item {
+  display: flex; align-items: center; gap: 14px;
+  width: 100%; background: white; border: none;
+  border-radius: 14px; padding: 13px 16px; margin-bottom: 8px;
+  cursor: pointer; box-shadow: 0 1px 6px rgba(0,0,0,0.06);
+  transition: transform 0.15s, background 0.15s;
+  &:active { transform: scale(0.97); }
+  &.mi-active { background: #ede9fe; }
+  .mi-icon {
+    width: 40px; height: 40px; border-radius: 12px;
+    display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+    ion-icon { font-size: 20px; }
+  }
+  .mi-label { flex: 1; font-size: 15px; font-weight: 700; color: #1e293b; text-align: left; }
+  .mi-arrow { color: #cbd5e1; font-size: 15px; }
+}
+
+.menu-footer {
+  position: absolute; bottom: 0; width: 100%;
+  text-align: center; padding: 16px; font-size: 11px; color: #cbd5e1;
+  border-top: 1px solid #f1f5f9; background: #f8fafc;
+}

@@ -1,0 +1,88 @@
+<ion-header class="ion-no-border">
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-button fill="clear" color="light" (click)="openMenu()"><ion-icon name="menu-outline" slot="icon-only"></ion-icon></ion-button>
+    </ion-buttons>
+    <ion-title>Payments</ion-title>
+    <ion-buttons slot="end">
+      <ion-button fill="clear" color="light" (click)="toggleBulkMode()">
+        <ion-icon [name]="bulkMode ? 'close-outline' : 'checkbox-outline'" slot="icon-only"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true" class="flats-content">
+  <div class="flats-hero">
+    <div class="fh-circles"><div class="fh-c1"></div><div class="fh-c2"></div></div>
+    <div class="fh-top">
+      <ion-segment [(ngModel)]="selectedWing" (ionChange)="onWingChange()" class="wing-seg">
+        <ion-segment-button value="A">Wing A</ion-segment-button>
+        <ion-segment-button value="B">Wing B</ion-segment-button>
+      </ion-segment>
+      <ion-select [(ngModel)]="selectedMonth" (ionChange)="loadFlats()" interface="action-sheet" class="month-sel">
+        <ion-select-option *ngFor="let opt of monthOptions" [value]="opt.value">
+          {{ opt.label }}
+        </ion-select-option>
+      </ion-select>
+    </div>
+    <div class="fh-stats">
+      <div class="fhs-item"><div class="fhs-val">{{ paidThisMonth }}</div><div class="fhs-lbl">Paid</div></div>
+      <div class="fhs-div"></div>
+      <div class="fhs-item"><div class="fhs-val">{{ unpaidThisMonth }}</div><div class="fhs-lbl">Unpaid</div></div>
+      <div class="fhs-div"></div>
+      <div class="fhs-item"><div class="fhs-val">₹{{ collectedThisMonth | number }}</div><div class="fhs-lbl">Collected</div></div>
+    </div>
+  </div>
+
+  <div class="bulk-bar" *ngIf="bulkMode">
+    <div class="bulk-info">
+      <span class="bulk-count">{{ selectedCount }} selected</span>
+      <span class="bulk-amount" *ngIf="selectedCount > 0">· ₹{{ selectedTotal | number }}</span>
+    </div>
+    <div class="bulk-actions">
+      <button class="bulk-btn select-all-btn" (click)="selectAll()">Select All</button>
+      <button class="bulk-btn clear-btn" (click)="clearSelection()" *ngIf="selectedCount > 0">Clear</button>
+      <button class="bulk-btn submit-btn" (click)="submitBulkPayment()" [disabled]="selectedCount === 0">Pay {{ selectedCount > 0 ? selectedCount + ' Flats' : '' }}</button>
+    </div>
+  </div>
+
+  <div class="flats-body">
+    <div *ngFor="let floor of floors" class="floor-section">
+      <div class="floor-tag"><span class="ft-dot"></span>Floor {{ floor }}</div>
+      <div class="flats-grid">
+        <div *ngFor="let flat of getFlatsForFloor(floor)" class="flat-card"
+             [class.fc-paid]="isPaid(flat)" [class.fc-unpaid]="!isPaid(flat)" [class.fc-selected]="isSelected(flat)"
+             (click)="bulkMode && !isPaid(flat) ? toggleSelect(flat) : null">
+          <div class="fc-checkbox" *ngIf="bulkMode && !isPaid(flat)">
+            <div class="checkbox-circle" [class.checked]="isSelected(flat)">
+              <ion-icon name="checkmark-outline" *ngIf="isSelected(flat)"></ion-icon>
+            </div>
+          </div>
+          <div class="fc-top">
+            <span class="fc-no">{{ flat.flatNo }}</span>
+            <span class="fc-bhk" [class.bhk1]="flat.type==='1BHK'" [class.bhk2]="flat.type==='2BHK'">{{ flat.type }}</span>
+          </div>
+          <div class="fc-owner">{{ flat.ownerName || '—' }}</div>
+          <div class="fc-amount">₹{{ flat.monthlyAmount | number }}</div>
+          <div class="fc-due" *ngIf="getTotalDue(flat) > 0"><ion-icon name="warning-outline"></ion-icon>₹{{ getTotalDue(flat) | number }}</div>
+          <div class="fc-status" [class.paid-status]="isPaid(flat)" [class.unpaid-status]="!isPaid(flat)">{{ isPaid(flat) ? '✓ PAID' : 'UNPAID' }}</div>
+          <!-- Vehicles on this flat -->
+          <div class="fc-vehicles" *ngIf="getVehiclesForFlat(flat).length > 0">
+            <span *ngFor="let v of getVehiclesForFlat(flat)" class="fc-veh-chip">
+              {{ v.type === 'car' ? '🚗' : '🏍' }} {{ v.vehicleNo }}
+            </span>
+          </div>
+          <div class="fc-actions" *ngIf="!bulkMode">
+            <button class="fc-pay-btn" (click)="markPayment(flat)" [disabled]="isPaid(flat)" [class.done-btn]="isPaid(flat)">{{ isPaid(flat) ? 'Done' : 'Pay' }}</button>
+            <button class="fc-veh-btn" (click)="addVehicleToFlat(flat)" title="Add Vehicle">
+              <ion-icon name="car-outline"></ion-icon>
+            </button>
+            <button class="fc-edit-btn" (click)="editFlat(flat)"><ion-icon name="create-outline"></ion-icon></button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div style="height:80px"></div>
+  </div>
+</ion-content>

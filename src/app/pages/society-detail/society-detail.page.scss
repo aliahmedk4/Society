@@ -1,0 +1,216 @@
+.sd-content { --background: #f0f2f8; }
+
+// ── Toolbar ──
+ion-toolbar {
+  --background: linear-gradient(135deg, #4f46e5, #7c3aed);
+  --color: white;
+}
+.sd-toolbar-title { font-weight: 800; font-size: 18px; color: white; }
+
+// ── Hero ──
+.sd-hero {
+  background: linear-gradient(160deg, #4f46e5 0%, #7c3aed 55%, #a855f7 100%);
+  padding: 32px 24px 48px;
+  position: relative; overflow: hidden; text-align: center;
+
+  .sd-hero-circles {
+    .shc1 {
+      position: absolute; top: -60px; right: -60px;
+      width: 220px; height: 220px; border-radius: 50%;
+      background: rgba(255,255,255,0.07);
+    }
+    .shc2 {
+      position: absolute; bottom: -80px; left: -40px;
+      width: 260px; height: 260px; border-radius: 50%;
+      background: rgba(255,255,255,0.05);
+    }
+    .shc3 {
+      position: absolute; top: 20px; left: 30px;
+      width: 80px; height: 80px; border-radius: 50%;
+      background: rgba(255,255,255,0.06);
+    }
+  }
+
+  .sd-hero-body { position: relative; z-index: 1; }
+
+  .sd-avatar {
+    font-size: 56px; margin-bottom: 12px;
+    filter: drop-shadow(0 4px 12px rgba(0,0,0,0.3));
+  }
+  .sd-name {
+    font-size: 24px; font-weight: 900; color: white;
+    margin-bottom: 6px; text-shadow: 0 2px 8px rgba(0,0,0,0.2);
+  }
+  .sd-address { font-size: 13px; color: rgba(255,255,255,0.8); margin-bottom: 2px; }
+  .sd-city { font-size: 13px; color: rgba(255,255,255,0.7); margin-bottom: 14px; }
+  .sd-reg-badge {
+    display: inline-block;
+    background: rgba(255,255,255,0.15);
+    border: 1px solid rgba(255,255,255,0.25);
+    border-radius: 20px; padding: 5px 14px;
+    font-size: 11px; color: rgba(255,255,255,0.9);
+    font-weight: 700; letter-spacing: 0.5px;
+    backdrop-filter: blur(8px);
+  }
+}
+
+// ── Stats Strip ──
+.sd-stats-strip {
+  display: flex; align-items: center;
+  background: white;
+  margin: -20px 16px 0; border-radius: 18px;
+  box-shadow: 0 8px 32px rgba(79,70,229,0.18);
+  padding: 18px 0; position: relative; z-index: 10;
+
+  .sds-item {
+    flex: 1; text-align: center;
+    .sds-val { font-size: 22px; font-weight: 900; color: #1e293b; }
+    .sds-lbl { font-size: 10px; color: #94a3b8; font-weight: 700; text-transform: uppercase; letter-spacing: 0.8px; margin-top: 2px; }
+  }
+  .sds-divider { width: 1px; height: 36px; background: #f1f5f9; }
+}
+
+// ── Body ──
+.sd-body { padding: 24px 16px 0; }
+
+.sd-section-label {
+  font-size: 11px; font-weight: 800; color: #94a3b8;
+  text-transform: uppercase; letter-spacing: 1.4px;
+  margin: 24px 0 12px;
+}
+
+// ── Committee Card ──
+.sd-committee-card {
+  background: white; border-radius: 20px;
+  padding: 6px 16px; box-shadow: 0 2px 16px rgba(0,0,0,0.07);
+
+  .cm-row {
+    display: flex; align-items: center; gap: 14px; padding: 14px 0;
+  }
+  .cm-divider { height: 1px; background: #f8fafc; }
+  .cm-avatar {
+    width: 44px; height: 44px; border-radius: 14px; flex-shrink: 0;
+    display: flex; align-items: center; justify-content: center;
+    ion-icon { font-size: 20px; color: white; }
+  }
+  .cm-info { flex: 1; }
+  .cm-role { font-size: 10px; color: #94a3b8; font-weight: 700; text-transform: uppercase; letter-spacing: 0.8px; }
+  .cm-name { font-size: 15px; font-weight: 800; color: #1e293b; margin-top: 2px; }
+  .cm-badge {
+    font-size: 10px; font-weight: 800; padding: 4px 10px; border-radius: 20px;
+    &.chair { background: #ede9fe; color: #4f46e5; }
+    &.sec   { background: #dbeafe; color: #2563eb; }
+    &.treas { background: #d1fae5; color: #059669; }
+  }
+}
+
+// ── Info Card ──
+.sd-info-card {
+  background: white; border-radius: 20px;
+  padding: 6px 16px; box-shadow: 0 2px 16px rgba(0,0,0,0.07);
+
+  .ic-row { display: flex; align-items: center; gap: 14px; padding: 14px 0; }
+  .ic-divider { height: 1px; background: #f8fafc; }
+  .ic-icon {
+    width: 40px; height: 40px; border-radius: 12px; flex-shrink: 0;
+    display: flex; align-items: center; justify-content: center;
+    ion-icon { font-size: 18px; }
+  }
+  .ic-label { font-size: 10px; color: #94a3b8; font-weight: 700; text-transform: uppercase; letter-spacing: 0.8px; }
+  .ic-val { font-size: 14px; font-weight: 700; color: #1e293b; margin-top: 2px; }
+}
+
+// ── Structure Grid ──
+.sd-structure-grid {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 12px;
+
+  .sg-card {
+    background: white; border-radius: 18px; padding: 18px 14px;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.06); text-align: center;
+    .sg-icon { font-size: 26px; margin-bottom: 8px; }
+    .sg-val { font-size: 26px; font-weight: 900; color: #1e293b; line-height: 1; }
+    .sg-lbl { font-size: 11px; color: #94a3b8; font-weight: 700; margin-top: 4px; text-transform: uppercase; letter-spacing: 0.5px; }
+  }
+}
+
+// ── Amenities ──
+.sd-amenities-wrap {
+  display: flex; flex-wrap: wrap; gap: 8px;
+
+  .am-chip {
+    background: white; border-radius: 20px; padding: 7px 14px;
+    font-size: 13px; font-weight: 700; color: #4f46e5;
+    box-shadow: 0 2px 8px rgba(79,70,229,0.12);
+    border: 1.5px solid #ede9fe;
+    &.editable { display: flex; align-items: center; gap: 6px; }
+    .am-remove {
+      font-size: 11px; color: #ef4444; cursor: pointer;
+      font-weight: 900; line-height: 1;
+    }
+  }
+}
+
+// ── Edit Mode ──
+.sd-edit-header {
+  background: linear-gradient(135deg, #4f46e5, #7c3aed);
+  padding: 28px 24px 24px; text-align: center;
+  .seh-title { font-size: 20px; font-weight: 900; color: white; }
+  .seh-sub { font-size: 13px; color: rgba(255,255,255,0.7); margin-top: 4px; }
+}
+
+.sd-edit-body { padding: 20px 16px 0; }
+
+.ef-section-label {
+  font-size: 10px; font-weight: 800; color: #94a3b8;
+  text-transform: uppercase; letter-spacing: 1.4px;
+  margin: 20px 0 10px;
+}
+
+.ef-group {
+  margin-bottom: 12px;
+  .ef-label { font-size: 11px; font-weight: 700; color: #64748b; margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.5px; }
+  &.ef-half { flex: 1; }
+}
+
+.ef-row { display: flex; gap: 12px; }
+
+.ef-input {
+  --background: white;
+  --color: #1e293b;
+  --placeholder-color: #cbd5e1;
+  --padding-start: 14px;
+  --padding-end: 14px;
+  border-radius: 12px;
+  box-shadow: 0 1px 6px rgba(0,0,0,0.06);
+  font-size: 14px; font-weight: 600;
+  border: 1.5px solid #e2e8f0;
+  min-height: 46px;
+}
+
+.ef-add-row {
+  display: flex; gap: 10px; align-items: center;
+  .ef-add-btn {
+    background: linear-gradient(135deg, #4f46e5, #7c3aed);
+    color: white; border: none; border-radius: 12px;
+    padding: 0 18px; height: 46px; font-size: 13px; font-weight: 800;
+    cursor: pointer; white-space: nowrap; flex-shrink: 0;
+  }
+}
+
+.ef-actions {
+  display: flex; gap: 12px; margin-top: 28px;
+  .ef-btn {
+    flex: 1; height: 52px; border: none; border-radius: 16px;
+    font-size: 15px; font-weight: 800; cursor: pointer;
+    transition: transform 0.15s, box-shadow 0.15s;
+    &:active { transform: scale(0.97); }
+    &.cancel {
+      background: #f1f5f9; color: #64748b;
+    }
+    &.save {
+      background: linear-gradient(135deg, #4f46e5, #7c3aed);
+      color: white;
+      box-shadow: 0 4px 20px rgba(79,70,229,0.35);
+    }
+  }
+}

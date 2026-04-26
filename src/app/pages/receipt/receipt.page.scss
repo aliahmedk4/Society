@@ -1,0 +1,54 @@
+.receipt-content { --background: #f0f2f8; }
+.receipt-hero {
+  background: linear-gradient(160deg, #0ea5e9 0%, #0284c7 55%, #0369a1 100%);
+  padding: 20px 20px 24px; position: relative; overflow: hidden;
+  .rh-c1 { position: absolute; top: -40px; right: -40px; width: 160px; height: 160px; border-radius: 50%; background: rgba(255,255,255,0.07); }
+  .rh-c2 { position: absolute; bottom: -60px; left: -20px; width: 200px; height: 200px; border-radius: 50%; background: rgba(255,255,255,0.05); }
+  .rh-inner { position: relative; z-index: 1; text-align: center; margin-bottom: 20px; }
+  .rh-icon { font-size: 40px; margin-bottom: 8px; }
+  .rh-title { font-size: 22px; font-weight: 900; color: white; }
+  .rh-sub { font-size: 13px; color: rgba(255,255,255,0.7); margin-top: 4px; }
+  .rh-search { position: relative; z-index: 1; }
+  .rh-searchbar { --background: rgba(255,255,255,0.95); --border-radius: 14px; --box-shadow: 0 4px 16px rgba(0,0,0,0.15); }
+}
+.receipt-list { padding: 16px; }
+.rli-card {
+  display: flex; align-items: center; gap: 12px; background: white; border-radius: 18px; padding: 14px 16px; margin-bottom: 10px; box-shadow: 0 2px 12px rgba(0,0,0,0.07); cursor: pointer; transition: transform 0.15s;
+  &:active { transform: scale(0.98); }
+  .rli-avatar { width: 48px; height: 48px; border-radius: 14px; background: linear-gradient(135deg, #ede9fe, #ddd6fe); color: #4f46e5; font-weight: 900; font-size: 14px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; &.rli-due { background: linear-gradient(135deg, #fee2e2, #fecaca); color: #dc2626; } }
+  .rli-info { flex: 1; min-width: 0; }
+  .rli-flat { font-size: 15px; font-weight: 800; color: #1e293b; }
+  .rli-wing { font-size: 11px; color: #94a3b8; font-weight: 600; margin-left: 6px; }
+  .rli-owner { font-size: 13px; color: #475569; margin-top: 2px; }
+  .rli-meta { font-size: 11px; color: #94a3b8; margin-top: 2px; }
+  .rli-right { display: flex; align-items: center; gap: 6px; flex-shrink: 0; }
+  .rli-badge { font-size: 11px; font-weight: 800; padding: 4px 10px; border-radius: 20px; &.rli-clear { background: #d1fae5; color: #059669; } &.rli-owe { background: #fee2e2; color: #dc2626; } }
+  .rli-arrow { color: #cbd5e1; font-size: 16px; }
+}
+.rdet-hero {
+  background: linear-gradient(160deg, #4f46e5 0%, #7c3aed 60%, #a855f7 100%);
+  padding: 20px 20px 28px; position: relative; overflow: hidden;
+  .rdh-c1 { position: absolute; top: -50px; right: -50px; width: 200px; height: 200px; border-radius: 50%; background: rgba(255,255,255,0.07); }
+  .rdh-inner { position: relative; z-index: 1; }
+  .rdh-flat { font-size: 30px; font-weight: 900; color: white; }
+  .rdh-owner { font-size: 16px; color: rgba(255,255,255,0.85); font-weight: 600; margin-top: 4px; }
+  .rdh-meta { font-size: 13px; color: rgba(255,255,255,0.6); margin-top: 4px; }
+  .rdh-stats { display: flex; align-items: center; background: rgba(255,255,255,0.12); border: 1px solid rgba(255,255,255,0.2); border-radius: 16px; padding: 14px; margin-top: 20px; backdrop-filter: blur(8px); }
+  .rdhs { flex: 1; text-align: center; color: white; }
+  .rdhs-val { font-size: 17px; font-weight: 900; &.rdhs-due { color: #fca5a5; } }
+  .rdhs-lbl { font-size: 10px; opacity: 0.65; margin-top: 2px; text-transform: uppercase; letter-spacing: 0.8px; }
+  .rdhs-div { width: 1px; height: 36px; background: rgba(255,255,255,0.25); }
+}
+.rdet-body { padding: 16px; }
+.rdet-label { font-size: 11px; font-weight: 800; color: #94a3b8; text-transform: uppercase; letter-spacing: 1.4px; margin-bottom: 14px; }
+.empty-state { text-align: center; padding: 48px 24px; .es-icon { font-size: 48px; margin-bottom: 12px; } .es-title { font-size: 18px; font-weight: 800; color: #1e293b; } .es-sub { font-size: 13px; color: #94a3b8; margin-top: 6px; } }
+.pay-card {
+  background: white; border-radius: 18px; padding: 16px; margin-bottom: 12px; box-shadow: 0 2px 12px rgba(0,0,0,0.07); border-left: 4px solid #4f46e5;
+  .pc-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
+  .pc-month { font-size: 16px; font-weight: 800; color: #1e293b; }
+  .pc-amount { font-size: 22px; font-weight: 900; color: #10b981; }
+  .pc-row { display: flex; justify-content: space-between; font-size: 12px; color: #94a3b8; margin-bottom: 6px; }
+  .pc-rcpt { font-size: 11px; color: #cbd5e1; }
+  .pc-note { font-size: 13px; color: #64748b; margin-bottom: 10px; padding: 8px 10px; background: #f8fafc; border-radius: 8px; }
+  .pc-dl-btn { width: 100%; border: none; border-radius: 12px; background: linear-gradient(135deg, #4f46e5, #7c3aed); color: white; padding: 12px; font-size: 14px; font-weight: 800; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; ion-icon { font-size: 18px; } }
+}

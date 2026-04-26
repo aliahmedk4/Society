@@ -1,0 +1,45 @@
+.flats-content { --background: #f0f2f8; }
+.flats-hero {
+  background: linear-gradient(160deg, #4f46e5 0%, #7c3aed 60%, #a855f7 100%);
+  padding: 20px 20px 28px; position: relative; overflow: hidden;
+  .fh-circles { .fh-c1 { position: absolute; top: -40px; right: -40px; width: 160px; height: 160px; border-radius: 50%; background: rgba(255,255,255,0.07); } .fh-c2 { position: absolute; bottom: -60px; left: -20px; width: 200px; height: 200px; border-radius: 50%; background: rgba(255,255,255,0.05); } }
+  .fh-top { position: relative; z-index: 1; margin-bottom: 20px; }
+  .wing-seg { --background: rgba(255,255,255,0.15); margin-bottom: 12px; ion-segment-button { --color: rgba(255,255,255,0.7); --color-checked: #4f46e5; --indicator-color: white; } }
+  .month-sel { background: rgba(255,255,255,0.15); border: 1px solid rgba(255,255,255,0.25); border-radius: 12px; color: white; padding: 10px 14px; width: 100%; font-size: 14px; font-weight: 700; backdrop-filter: blur(8px); }
+  .fh-stats { display: flex; align-items: center; background: rgba(255,255,255,0.12); border: 1px solid rgba(255,255,255,0.2); border-radius: 16px; padding: 14px; position: relative; z-index: 1; backdrop-filter: blur(8px); }
+  .fhs-item { flex: 1; text-align: center; color: white; }
+  .fhs-val { font-size: 18px; font-weight: 900; }
+  .fhs-lbl { font-size: 10px; opacity: 0.7; margin-top: 2px; text-transform: uppercase; letter-spacing: 0.8px; }
+  .fhs-div { width: 1px; height: 32px; background: rgba(255,255,255,0.25); }
+}
+.bulk-bar {
+  background: #1e293b; padding: 12px 16px; display: flex; align-items: center; justify-content: space-between; gap: 10px;
+  .bulk-info { .bulk-count { font-size: 14px; font-weight: 800; color: white; } .bulk-amount { font-size: 13px; color: #10b981; font-weight: 700; } }
+  .bulk-actions { display: flex; gap: 8px; align-items: center; }
+  .bulk-btn { border: none; border-radius: 10px; padding: 8px 12px; font-size: 12px; font-weight: 800; cursor: pointer; &.select-all-btn { background: #334155; color: #94a3b8; } &.clear-btn { background: #334155; color: #f87171; } &.submit-btn { background: linear-gradient(135deg, #10b981, #059669); color: white; &:disabled { background: #334155; color: #475569; cursor: default; } } }
+}
+.flats-body { padding: 16px; }
+.floor-section { margin-bottom: 8px; }
+.floor-tag { display: flex; align-items: center; gap: 8px; font-size: 11px; font-weight: 800; color: #64748b; text-transform: uppercase; letter-spacing: 1.2px; margin-bottom: 10px; margin-top: 16px; .ft-dot { width: 7px; height: 7px; border-radius: 50%; background: #4f46e5; } }
+.flats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.flat-card {
+  background: white; border-radius: 18px; padding: 14px; box-shadow: 0 2px 12px rgba(0,0,0,0.07); border: 2px solid transparent; transition: transform 0.15s;
+  &:active { transform: scale(0.97); }
+  &.fc-paid { border-color: #10b981; background: linear-gradient(145deg, #f0fdf4 0%, white 60%); }
+  &.fc-unpaid { border-color: #fca5a5; background: linear-gradient(145deg, #fff5f5 0%, white 60%); }
+  &.fc-selected { border-color: #4f46e5; background: linear-gradient(145deg, #ede9fe 0%, white 60%); box-shadow: 0 0 0 2px rgba(79,70,229,0.3); }
+  .fc-checkbox { display: flex; justify-content: flex-end; margin-bottom: 4px; .checkbox-circle { width: 22px; height: 22px; border-radius: 50%; border: 2px solid #cbd5e1; display: flex; align-items: center; justify-content: center; transition: all 0.2s; &.checked { background: #4f46e5; border-color: #4f46e5; ion-icon { color: white; font-size: 14px; } } } }
+  .fc-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px; }
+  .fc-no { font-size: 17px; font-weight: 900; color: #1e293b; }
+  .fc-bhk { font-size: 10px; font-weight: 800; padding: 2px 8px; border-radius: 20px; &.bhk1 { background: #ede9fe; color: #6d28d9; } &.bhk2 { background: #dbeafe; color: #1d4ed8; } }
+  .fc-owner { font-size: 12px; color: #64748b; margin-bottom: 3px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .fc-amount { font-size: 15px; font-weight: 800; color: #1e293b; }
+  .fc-due { display: flex; align-items: center; gap: 3px; font-size: 11px; color: #ef4444; font-weight: 700; margin-top: 2px; ion-icon { font-size: 12px; } }
+  .fc-status { display: inline-block; margin: 7px 0 8px; font-size: 10px; font-weight: 800; padding: 3px 9px; border-radius: 20px; letter-spacing: 0.5px; &.paid-status { background: #d1fae5; color: #059669; } &.unpaid-status { background: #fee2e2; color: #dc2626; } }
+  .fc-vehicles { display: flex; flex-wrap: wrap; gap: 4px; margin-bottom: 8px; }
+  .fc-veh-chip { font-size: 10px; font-weight: 700; background: #fef3c7; color: #d97706; border: 1px solid #fde68a; padding: 2px 7px; border-radius: 20px; white-space: nowrap; }
+  .fc-actions { display: flex; gap: 6px; }
+  .fc-pay-btn { flex: 1; border: none; border-radius: 10px; padding: 8px 4px; font-size: 12px; font-weight: 800; cursor: pointer; background: linear-gradient(135deg, #4f46e5, #7c3aed); color: white; &.done-btn { background: #e2e8f0; color: #94a3b8; cursor: default; } &:disabled { opacity: 1; } }
+  .fc-veh-btn { flex: 0 0 34px; border: none; border-radius: 10px; background: #fef3c7; color: #d97706; cursor: pointer; display: flex; align-items: center; justify-content: center; ion-icon { font-size: 16px; } }
+  .fc-edit-btn { flex: 0 0 34px; border: none; border-radius: 10px; background: #f1f5f9; color: #64748b; cursor: pointer; display: flex; align-items: center; justify-content: center; ion-icon { font-size: 16px; } }
+}

@@ -1,0 +1,112 @@
+<ion-header class="ion-no-border">
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-button fill="clear" color="light" (click)="openMenu()">
+        <ion-icon name="menu-outline" slot="icon-only"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+    <ion-title>Vehicles</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true" class="vehicles-content">
+
+  <!-- Hero -->
+  <div class="veh-hero">
+    <div class="vh-c1"></div><div class="vh-c2"></div>
+    <div class="vh-stats">
+      <div class="vhs"><div class="vhs-icon">🚗</div><div class="vhs-val">{{ carCount }}</div><div class="vhs-lbl">Cars</div></div>
+      <div class="vhs-div"></div>
+      <div class="vhs"><div class="vhs-icon">🏍</div><div class="vhs-val">{{ bikeCount }}</div><div class="vhs-lbl">Bikes</div></div>
+      <div class="vhs-div"></div>
+      <div class="vhs"><div class="vhs-icon">🅿️</div><div class="vhs-val">{{ allVehicles.length }}</div><div class="vhs-lbl">Total</div></div>
+    </div>
+
+    <!-- Search -->
+    <div class="vh-search">
+      <ion-searchbar [(ngModel)]="searchTerm" (ionInput)="onFilterChange()"
+        placeholder="Search plate, flat, owner..." debounce="200" class="vh-searchbar">
+      </ion-searchbar>
+    </div>
+
+    <!-- Wing tabs -->
+    <ion-segment [(ngModel)]="selectedWing" (ionChange)="onFilterChange()" class="wing-seg">
+      <ion-segment-button value="A">
+        <div class="wsb-inner">Wing A <span class="wsb-count">{{ wings[0]?.totalVehicles || 0 }}</span></div>
+      </ion-segment-button>
+      <ion-segment-button value="B">
+        <div class="wsb-inner">Wing B <span class="wsb-count">{{ wings[1]?.totalVehicles || 0 }}</span></div>
+      </ion-segment-button>
+    </ion-segment>
+
+    <!-- Type filter -->
+    <ion-segment [(ngModel)]="filterType" (ionChange)="onFilterChange()" class="type-seg">
+      <ion-segment-button value="all">All</ion-segment-button>
+      <ion-segment-button value="car">🚗 Cars</ion-segment-button>
+      <ion-segment-button value="bike">🏍 Bikes</ion-segment-button>
+    </ion-segment>
+  </div>
+
+  <!-- Block view -->
+  <div class="veh-body" *ngIf="activeWing">
+
+    <div *ngFor="let floorGroup of activeWing.floors" class="floor-section">
+
+      <!-- Floor label -->
+      <div class="floor-label">
+        <span class="fl-dot"></span>
+        Floor {{ floorGroup.floor }}
+        <span class="fl-count">
+          {{ floorVehicleCount(floorGroup) }} vehicle{{ floorVehicleCount(floorGroup) !== 1 ? 's' : '' }}
+        </span>
+      </div>
+
+      <!-- Flat blocks grid -->
+      <div class="blocks-grid">
+        <div *ngFor="let block of floorGroup.blocks" class="flat-block"
+             [class.has-vehicles]="block.vehicles.length > 0"
+             [class.empty-block]="block.vehicles.length === 0">
+
+          <!-- Flat header -->
+          <div class="fb-header">
+            <div class="fb-flat-no">{{ block.flat.flatNo }}</div>
+            <div class="fb-type" [class.bhk1]="block.flat.type==='1BHK'" [class.bhk2]="block.flat.type==='2BHK'">
+              {{ block.flat.type }}
+            </div>
+            <button class="fb-add-btn" (click)="addVehicleToFlat(block.flat)">
+              <ion-icon name="add-outline"></ion-icon>
+            </button>
+          </div>
+
+          <!-- Owner -->
+          <div class="fb-owner">{{ block.flat.ownerName || '—' }}</div>
+
+          <!-- Vehicles list -->
+          <div class="fb-vehicles" *ngIf="block.vehicles.length > 0">
+            <div *ngFor="let v of block.vehicles" class="fb-veh-row"
+                 [class.vr-car]="v.type==='car'" [class.vr-bike]="v.type==='bike'">
+              <span class="vr-icon">{{ v.type === 'car' ? '🚗' : '🏍' }}</span>
+              <div class="vr-info">
+                <div class="vr-plate">{{ v.vehicleNo }}</div>
+                <div class="vr-model">{{ v.model || '—' }}</div>
+              </div>
+              <button class="vr-del" (click)="deleteVehicle(v)">
+                <ion-icon name="trash-outline"></ion-icon>
+              </button>
+            </div>
+          </div>
+
+          <!-- Empty slot -->
+          <div class="fb-empty" *ngIf="block.vehicles.length === 0">
+            <ion-icon name="car-outline"></ion-icon>
+            <span>No vehicles</span>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <div style="height:80px"></div>
+  </div>
+
+</ion-content>

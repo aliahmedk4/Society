@@ -1,0 +1,164 @@
+<ion-header class="ion-no-border">
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-button fill="clear" color="light" (click)="openMenu()">
+        <ion-icon name="menu-outline" slot="icon-only"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+    <ion-title>Configure Charges</ion-title>
+    <ion-buttons slot="end">
+      <ion-button fill="clear" color="light" (click)="openAdd()" *ngIf="!showForm">
+        <ion-icon name="add-outline" slot="icon-only"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true" class="cfg-content">
+
+  <!-- Hero -->
+  <div class="cfg-hero">
+    <div class="ch-c1"></div><div class="ch-c2"></div>
+    <div class="ch-inner">
+      <div class="ch-icon">⚙️</div>
+      <div class="ch-title">Maintenance Charges</div>
+      <div class="ch-sub">{{ charges.length }} charge{{ charges.length !== 1 ? 's' : '' }} configured</div>
+    </div>
+  </div>
+
+  <!-- ── BANK BALANCE SECTION ── -->
+  <div class="bank-card">
+    <div class="bc-header">
+      <div class="bc-left">
+        <div class="bc-icon">🏦</div>
+        <div class="bc-info">
+          <div class="bc-label">Bank Balance</div>
+          <div class="bc-val">₹{{ fund?.bankBalance | number }}</div>
+          <div class="bc-updated" *ngIf="fund?.lastUpdated">
+            Updated: {{ fund.lastUpdated | date:'dd MMM yyyy' }}
+          </div>
+        </div>
+      </div>
+      <button class="bc-edit-btn" (click)="showBankForm = !showBankForm; bankBalanceInput = fund?.bankBalance ?? 0">
+        <ion-icon [name]="showBankForm ? 'close-outline' : 'create-outline'"></ion-icon>
+      </button>
+    </div>
+    <div class="bc-form" *ngIf="showBankForm">
+      <div class="cf-label" style="margin-bottom:6px">Enter Current Bank Balance (₹)</div>
+      <div class="bc-input-row">
+        <ion-input class="cf-input" type="number" [(ngModel)]="bankBalanceInput" placeholder="e.g. 300000"></ion-input>
+        <button class="bc-save-btn" (click)="saveBankBalance()">
+          <ion-icon name="checkmark-outline"></ion-icon> Save
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── ADD / EDIT FORM ── -->
+  <div class="cfg-form-card" *ngIf="showForm">
+    <div class="cfc-title">{{ editingId ? 'Edit Charge' : 'Add New Charge' }}</div>
+
+    <div class="cf-group">
+      <div class="cf-label">Bill Label *</div>
+      <ion-input class="cf-input" [(ngModel)]="form.label" placeholder="e.g. Water Bill, Lift Repair"></ion-input>
+    </div>
+
+    <div class="cf-group">
+      <div class="cf-label">Amount (₹) *</div>
+      <ion-input class="cf-input" type="number" [(ngModel)]="form.amount" placeholder="0"></ion-input>
+    </div>
+
+    <div class="cf-group">
+      <div class="cf-label">Month *</div>
+      <ion-select [(ngModel)]="form.month" interface="action-sheet" class="cf-select">
+        <ion-select-option *ngFor="let m of allMonths" [value]="m">{{ getMonthLabel(m) }}</ion-select-option>
+      </ion-select>
+    </div>
+
+    <!-- Wing checkboxes -->
+    <div class="cf-group">
+      <div class="cf-label">Apply to Wings *</div>
+      <div class="cf-wing-row">
+        <label class="cf-wing-check" [class.wing-active]="form.wingA" (click)="form.wingA = !form.wingA">
+          <div class="cwc-box" [class.checked]="form.wingA">
+            <ion-icon name="checkmark-outline" *ngIf="form.wingA"></ion-icon>
+          </div>
+          <div class="cwc-info">
+            <div class="cwc-badge a-badge">A</div>
+            <div class="cwc-lbl">Wing A</div>
+          </div>
+        </label>
+        <label class="cf-wing-check" [class.wing-active]="form.wingB" (click)="form.wingB = !form.wingB">
+          <div class="cwc-box" [class.checked]="form.wingB">
+            <ion-icon name="checkmark-outline" *ngIf="form.wingB"></ion-icon>
+          </div>
+          <div class="cwc-info">
+            <div class="cwc-badge b-badge">B</div>
+            <div class="cwc-lbl">Wing B</div>
+          </div>
+        </label>
+      </div>
+    </div>
+
+    <!-- Active toggle -->
+    <div class="cf-group cf-toggle-row">
+      <div class="cf-label" style="margin:0">Active</div>
+      <ion-toggle [(ngModel)]="form.active" color="success"></ion-toggle>
+    </div>
+
+    <div class="cf-actions">
+      <button class="cf-btn cancel" (click)="cancelForm()">Cancel</button>
+      <button class="cf-btn save" (click)="save()">
+        <ion-icon name="checkmark-outline"></ion-icon>
+        {{ editingId ? 'Update' : 'Add Charge' }}
+      </button>
+    </div>
+  </div>
+
+  <!-- ── CHARGES LIST ── -->
+  <div class="cfg-body">
+
+    <div *ngIf="charges.length === 0 && !showForm" class="empty-state">
+      <div class="es-icon">⚙️</div>
+      <div class="es-title">No charges configured</div>
+      <div class="es-sub">Tap + to add a maintenance charge</div>
+    </div>
+
+    <div *ngFor="let c of charges" class="charge-card" [class.cc-inactive]="!c.active">
+
+      <div class="cc-left">
+        <div class="cc-label">{{ c.label }}</div>
+        <div class="cc-month">{{ getMonthLabel(c.month) }}</div>
+        <div class="cc-wings">
+          <span class="cc-wing-badge a-badge" *ngIf="c.wingA">Wing A</span>
+          <span class="cc-wing-badge b-badge" *ngIf="c.wingB">Wing B</span>
+        </div>
+        <!-- Preview label as it appears in dropdown -->
+        <div class="cc-preview">
+          <ion-icon name="eye-outline"></ion-icon>
+          Shows as: <strong>{{ getChargeLabel(c) }}</strong>
+        </div>
+      </div>
+
+      <div class="cc-right">
+        <div class="cc-amount">₹{{ c.amount | number }}</div>
+        <div class="cc-status-badge" [class.active-badge]="c.active" [class.inactive-badge]="!c.active"
+             (click)="toggleActive(c)">
+          {{ c.active ? 'Active' : 'Off' }}
+        </div>
+        <div class="cc-actions">
+          <button class="cc-edit" (click)="openEdit(c)">
+            <ion-icon name="create-outline"></ion-icon>
+          </button>
+          <button class="cc-del" (click)="deleteCharge(c)">
+            <ion-icon name="trash-outline"></ion-icon>
+          </button>
+        </div>
+      </div>
+
+    </div>
+
+    <div style="height:80px"></div>
+  </div>
+
+</ion-content>
