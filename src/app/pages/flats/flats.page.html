@@ -35,6 +35,51 @@
     </div>
   </div>
 
+  <!-- ── Inline Edit Panel ── -->
+  <div class="flat-edit-panel" *ngIf="editingFlat">
+    <div class="fep-header">
+      <div class="fep-left">
+        <div class="fep-flat-no">{{ editingFlat.flatNo }}</div>
+        <div class="fep-sub">Wing {{ editingFlat.wing }} · Floor {{ editingFlat.floor }} · {{ editingFlat.type }}</div>
+      </div>
+      <button class="fep-close" (click)="cancelEdit()">
+        <ion-icon name="close-outline"></ion-icon>
+      </button>
+    </div>
+
+    <div class="fep-body">
+      <div class="fep-row">
+        <div class="fep-group">
+          <div class="fep-label">Owner Name</div>
+          <ion-input class="fep-input" [(ngModel)]="editForm.ownerName" placeholder="Full name"></ion-input>
+        </div>
+      </div>
+      <div class="fep-row">
+        <div class="fep-group">
+          <div class="fep-label">Phone</div>
+          <ion-input class="fep-input" type="tel" [(ngModel)]="editForm.phone" placeholder="+91 XXXXX XXXXX"></ion-input>
+        </div>
+      </div>
+      <div class="fep-row two-col">
+        <div class="fep-group">
+          <div class="fep-label">Monthly Amount (&#8377;)</div>
+          <ion-input class="fep-input" type="number" [(ngModel)]="editForm.monthlyAmount"></ion-input>
+        </div>
+        <div class="fep-group">
+          <div class="fep-label">Opening Balance (&#8377;)</div>
+          <ion-input class="fep-input" type="number" [(ngModel)]="editForm.openingBalance"></ion-input>
+        </div>
+      </div>
+    </div>
+
+    <div class="fep-actions">
+      <button class="fep-btn cancel" (click)="cancelEdit()">Cancel</button>
+      <button class="fep-btn save" (click)="saveEditFlat()">
+        <ion-icon name="checkmark-outline"></ion-icon> Save Changes
+      </button>
+    </div>
+  </div>
+
   <div class="bulk-bar" *ngIf="bulkMode">
     <div class="bulk-info">
       <span class="bulk-count">{{ selectedCount }} selected</span>
@@ -48,9 +93,28 @@
   </div>
 
   <div class="flats-body">
+
+    <!-- Expand / Collapse all -->
+    <div class="floor-controls">
+      <button class="fc-ctrl-btn" (click)="expandAll()"><ion-icon name="chevron-down-outline"></ion-icon> Expand All</button>
+      <button class="fc-ctrl-btn" (click)="collapseAll()"><ion-icon name="chevron-up-outline"></ion-icon> Collapse All</button>
+    </div>
+
     <div *ngFor="let floor of floors" class="floor-section">
-      <div class="floor-tag"><span class="ft-dot"></span>Floor {{ floor }}</div>
-      <div class="flats-grid">
+
+      <!-- Tappable floor header -->
+      <div class="floor-tag" (click)="toggleFloor(floor)" [class.ft-expanded]="isFloorExpanded(floor)">
+        <div class="ft-left">
+          <span class="ft-dot"></span>
+          <span class="ft-label">Floor {{ floor }}</span>
+          <span class="ft-paid">{{ floorPaidCount(floor) }} paid</span>
+          <span class="ft-unpaid" *ngIf="floorUnpaidCount(floor) > 0">{{ floorUnpaidCount(floor) }} unpaid</span>
+        </div>
+        <ion-icon class="ft-chevron" [name]="isFloorExpanded(floor) ? 'chevron-up-outline' : 'chevron-down-outline'"></ion-icon>
+      </div>
+
+      <!-- Collapsible grid -->
+      <div class="flats-grid" *ngIf="isFloorExpanded(floor)">
         <div *ngFor="let flat of getFlatsForFloor(floor)" class="flat-card"
              [class.fc-paid]="isPaid(flat)" [class.fc-unpaid]="!isPaid(flat)" [class.fc-selected]="isSelected(flat)"
              (click)="bulkMode && !isPaid(flat) ? toggleSelect(flat) : null">
@@ -85,4 +149,56 @@
     </div>
     <div style="height:80px"></div>
   </div>
+
+  <!-- ══ Add Vehicle Overlay ══ -->
+  <div class="veh-overlay" *ngIf="vehicleFlat" (click)="cancelVehicleForm()">
+    <div class="veh-sheet" (click)="$event.stopPropagation()">
+      <div class="vs-handle"></div>
+
+      <div class="vs-header">
+        <div class="vs-flat-badge">{{ vehicleFlat.flatNo }}</div>
+        <div class="vs-info">
+          <div class="vs-title">Add Vehicle</div>
+          <div class="vs-sub">{{ vehicleFlat.ownerName || 'No owner' }} &bull; Wing {{ vehicleFlat.wing }}</div>
+        </div>
+        <button class="vs-close" (click)="cancelVehicleForm()">
+          <ion-icon name="close-outline"></ion-icon>
+        </button>
+      </div>
+
+      <div class="vs-section">Vehicle Type</div>
+      <div class="vs-type-row">
+        <button class="vs-type-btn" [class.vst-car]="vehicleForm.type==='car'" (click)="vehicleForm.type='car'">
+          <div class="vstb-emoji">&#x1F697;</div>
+          <div class="vstb-lbl">Car</div>
+          <div class="vstb-tick" *ngIf="vehicleForm.type==='car'">&#10003;</div>
+        </button>
+        <button class="vs-type-btn" [class.vst-bike]="vehicleForm.type==='bike'" (click)="vehicleForm.type='bike'">
+          <div class="vstb-emoji">&#x1F3CD;</div>
+          <div class="vstb-lbl">Bike</div>
+          <div class="vstb-tick" *ngIf="vehicleForm.type==='bike'">&#10003;</div>
+        </button>
+      </div>
+
+      <div class="vs-section">Vehicle Number *</div>
+      <div class="vs-field">
+        <ion-icon name="car-sport-outline" class="vsf-icon"></ion-icon>
+        <ion-input class="vsf-input" [(ngModel)]="vehicleForm.vehicleNo" placeholder="e.g. GJ01AB1234"></ion-input>
+      </div>
+
+      <div class="vs-section">Model / Brand</div>
+      <div class="vs-field">
+        <ion-icon name="build-outline" class="vsf-icon"></ion-icon>
+        <ion-input class="vsf-input" [(ngModel)]="vehicleForm.model" placeholder="e.g. Honda City, Activa"></ion-input>
+      </div>
+
+      <div class="vs-actions">
+        <button class="vsa-cancel" (click)="cancelVehicleForm()">Cancel</button>
+        <button class="vsa-save" (click)="saveVehicle()">
+          <ion-icon name="checkmark-outline"></ion-icon> Add Vehicle
+        </button>
+      </div>
+    </div>
+  </div>
+
 </ion-content>

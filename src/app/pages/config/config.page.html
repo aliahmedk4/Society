@@ -33,13 +33,13 @@
         <div class="bc-icon">🏦</div>
         <div class="bc-info">
           <div class="bc-label">Bank Balance</div>
-          <div class="bc-val">₹{{ fund?.bankBalance | number }}</div>
-          <div class="bc-updated" *ngIf="fund?.lastUpdated">
+          <div class="bc-val">₹{{ fund.bankBalance | number }}</div>
+          <div class="bc-updated" *ngIf="fund.lastUpdated">
             Updated: {{ fund.lastUpdated | date:'dd MMM yyyy' }}
           </div>
         </div>
       </div>
-      <button class="bc-edit-btn" (click)="showBankForm = !showBankForm; bankBalanceInput = fund?.bankBalance ?? 0">
+      <button class="bc-edit-btn" (click)="showBankForm = !showBankForm; bankBalanceInput = fund.bankBalance">
         <ion-icon [name]="showBankForm ? 'close-outline' : 'create-outline'"></ion-icon>
       </button>
     </div>

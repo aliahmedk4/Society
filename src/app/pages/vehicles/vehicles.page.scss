@@ -1,104 +1,330 @@
-.vehicles-content { --background: #f0f2f8; }
+.veh-content { --background: #f0f2f8; }
 
+// Toolbar — use CSS variable approach, not shadow-piercing
+.veh-toolbar {
+  --background: linear-gradient(135deg, #d97706, #f59e0b) !important;
+  --color: white !important;
+}
+
+// ══ Hero ══
 .veh-hero {
-  background: linear-gradient(160deg, #d97706 0%, #f59e0b 55%, #fbbf24 100%);
-  padding: 20px 20px 24px; position: relative; overflow: hidden;
-  .vh-c1 { position: absolute; top: -40px; right: -40px; width: 160px; height: 160px; border-radius: 50%; background: rgba(255,255,255,0.08); }
-  .vh-c2 { position: absolute; bottom: -60px; left: -20px; width: 200px; height: 200px; border-radius: 50%; background: rgba(255,255,255,0.05); }
+  background: linear-gradient(160deg, #92400e 0%, #d97706 50%, #fbbf24 100%);
+  padding: 20px 20px 22px;
+  position: relative; overflow: hidden;
 
-  .vh-stats {
-    display: flex; align-items: center;
-    background: rgba(255,255,255,0.15); border: 1px solid rgba(255,255,255,0.25);
-    border-radius: 18px; padding: 16px; margin-bottom: 18px;
-    position: relative; z-index: 1; backdrop-filter: blur(8px);
-    .vhs { flex: 1; text-align: center; color: white; }
-    .vhs-icon { font-size: 26px; margin-bottom: 4px; }
-    .vhs-val { font-size: 24px; font-weight: 900; }
-    .vhs-lbl { font-size: 10px; opacity: 0.75; text-transform: uppercase; letter-spacing: 0.8px; margin-top: 2px; }
-    .vhs-div { width: 1px; height: 50px; background: rgba(255,255,255,0.3); }
+  .vh-c1 {
+    position: absolute; top: -60px; right: -60px;
+    width: 220px; height: 220px; border-radius: 50%;
+    background: rgba(255,255,255,0.08);
   }
-
-  .vh-search { position: relative; z-index: 1; margin-bottom: 12px; }
-  .vh-searchbar { --background: rgba(255,255,255,0.95); --border-radius: 14px; --box-shadow: 0 4px 16px rgba(0,0,0,0.12); }
-
-  .wing-seg {
-    --background: rgba(255,255,255,0.15); margin-bottom: 10px;
-    ion-segment-button { --color: rgba(255,255,255,0.7); --color-checked: #d97706; --indicator-color: white; }
-    .wsb-inner { display: flex; align-items: center; gap: 6px; font-weight: 700; }
-    .wsb-count {
-      background: rgba(255,255,255,0.25); color: white;
-      font-size: 11px; font-weight: 800; padding: 2px 7px; border-radius: 20px;
-    }
-  }
-
-  .type-seg {
-    --background: rgba(255,255,255,0.15);
-    ion-segment-button { --color: rgba(255,255,255,0.7); --color-checked: #d97706; --indicator-color: white; }
+  .vh-c2 {
+    position: absolute; bottom: -80px; left: -40px;
+    width: 260px; height: 260px; border-radius: 50%;
+    background: rgba(255,255,255,0.05);
   }
 }
 
-// ── Body ──
+// Stats
+.vh-stats {
+  display: flex; align-items: center;
+  background: rgba(255,255,255,0.15);
+  border: 1px solid rgba(255,255,255,0.25);
+  border-radius: 18px; padding: 16px;
+  margin-bottom: 16px; position: relative; z-index: 1;
+  backdrop-filter: blur(8px);
+}
+.vhs {
+  flex: 1; text-align: center; color: white;
+  .vhs-num { font-size: 28px; font-weight: 900; line-height: 1; }
+  .vhs-ico { font-size: 20px; margin: 4px 0 2px; }
+  .vhs-lbl { font-size: 10px; opacity: 0.75; font-weight: 700; text-transform: uppercase; letter-spacing: 0.8px; }
+}
+.vhs-sep { width: 1px; height: 52px; background: rgba(255,255,255,0.25); }
+
+// Search
+.veh-search {
+  position: relative; z-index: 1; margin-bottom: 12px; padding: 0;
+  --background: rgba(255,255,255,0.96);
+  --border-radius: 14px;
+  --box-shadow: 0 4px 16px rgba(0,0,0,0.12);
+  --placeholder-color: #94a3b8;
+  --color: #1e293b;
+  --icon-color: #d97706;
+}
+
+// Wing tabs
+.veh-wing-tabs {
+  display: flex; gap: 8px; margin-bottom: 10px; position: relative; z-index: 1;
+}
+.vwt {
+  flex: 1; display: flex; align-items: center; justify-content: center; gap: 6px;
+  border: none; border-radius: 12px; padding: 10px 8px;
+  background: rgba(255,255,255,0.15); color: rgba(255,255,255,0.8);
+  font-size: 13px; font-weight: 700; cursor: pointer; transition: all 0.15s;
+  &.vwt-a, &.vwt-b { background: white; color: #1e293b; box-shadow: 0 2px 8px rgba(0,0,0,0.12); }
+  .vwt-badge {
+    width: 22px; height: 22px; border-radius: 6px; font-size: 11px; font-weight: 900;
+    display: flex; align-items: center; justify-content: center; color: white;
+    background: linear-gradient(135deg, #4f46e5, #7c3aed);
+  }
+  &.vwt-b .vwt-badge { background: linear-gradient(135deg, #0ea5e9, #0284c7); }
+  .vwt-cnt {
+    background: rgba(255,255,255,0.25); color: white;
+    font-size: 11px; font-weight: 800; padding: 1px 7px; border-radius: 20px;
+  }
+  &.vwt-a .vwt-cnt, &.vwt-b .vwt-cnt { background: #f1f5f9; color: #64748b; }
+}
+
+// Type filter
+.veh-type-tabs {
+  display: flex; gap: 8px; position: relative; z-index: 1;
+}
+.vtt {
+  flex: 1; border: none; border-radius: 20px; padding: 8px 4px;
+  font-size: 12px; font-weight: 700; cursor: pointer;
+  background: rgba(255,255,255,0.15); color: rgba(255,255,255,0.8);
+  transition: all 0.15s;
+  &.vtt-on   { background: white; color: #d97706; }
+  &.vtt-car  { background: white; color: #d97706; }
+  &.vtt-bike { background: white; color: #7c3aed; }
+}
+
+// ══ Form Overlay ══
+.veh-form-overlay {
+  position: fixed; inset: 0; z-index: 10000;
+  background: rgba(15,23,42,0.6);
+  backdrop-filter: blur(6px);
+  display: flex; align-items: flex-end;
+  animation: veh-fade 0.2s ease;
+}
+
+@keyframes veh-fade { from { opacity: 0; } to { opacity: 1; } }
+
+.veh-form-sheet {
+  width: 100%; background: white;
+  border-radius: 28px 28px 0 0;
+  box-shadow: 0 -12px 48px rgba(0,0,0,0.25);
+  animation: veh-slide 0.32s cubic-bezier(0.34,1.56,0.64,1);
+  padding-bottom: env(safe-area-inset-bottom, 16px);
+}
+
+@keyframes veh-slide { from { transform: translateY(110%); } to { transform: translateY(0); } }
+
+.sheet-handle {
+  width: 40px; height: 4px; border-radius: 2px;
+  background: #e2e8f0; margin: 12px auto 0;
+}
+
+.vfs-header {
+  display: flex; align-items: center; gap: 14px;
+  padding: 18px 20px 16px;
+  background: linear-gradient(135deg, #92400e, #d97706);
+  border-radius: 28px 28px 0 0;
+  position: relative;
+
+  .vfs-flat-badge {
+    width: 52px; height: 52px; border-radius: 16px; flex-shrink: 0;
+    background: rgba(255,255,255,0.2); border: 2px solid rgba(255,255,255,0.35);
+    color: white; font-size: 16px; font-weight: 900;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .vfs-title { font-size: 19px; font-weight: 900; color: white; }
+  .vfs-sub { font-size: 12px; color: rgba(255,255,255,0.72); margin-top: 3px; }
+  .vfs-close {
+    position: absolute; top: 14px; right: 16px;
+    width: 36px; height: 36px; border: none; border-radius: 10px;
+    background: rgba(255,255,255,0.2); color: white; cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    ion-icon { font-size: 20px; }
+  }
+}
+
+.vfs-section {
+  font-size: 11px; font-weight: 800; color: #64748b;
+  text-transform: uppercase; letter-spacing: 1px;
+  padding: 16px 20px 8px;
+}
+
+// Type buttons — large, clear, no radio
+.vfs-type-row { display: flex; gap: 12px; padding: 0 20px; }
+.vfs-type {
+  flex: 1; display: flex; flex-direction: column; align-items: center; gap: 8px;
+  background: #f8fafc; border: 3px solid #e2e8f0; border-radius: 20px;
+  padding: 20px 8px; cursor: pointer; position: relative; transition: all 0.18s;
+  &:active { transform: scale(0.96); }
+
+  &.vft-car {
+    border-color: #fbbf24;
+    background: linear-gradient(145deg, #fffbeb, #fef3c7);
+    box-shadow: 0 4px 16px rgba(251,191,36,0.3);
+  }
+  &.vft-bike {
+    border-color: #a78bfa;
+    background: linear-gradient(145deg, #f5f3ff, #ede9fe);
+    box-shadow: 0 4px 16px rgba(167,139,250,0.3);
+  }
+
+  .vft-emoji { font-size: 40px; }
+  .vft-name { font-size: 15px; font-weight: 800; color: #1e293b; }
+  .vft-tick {
+    position: absolute; top: 10px; right: 10px;
+    width: 26px; height: 26px; border-radius: 50%;
+    background: white; box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+    font-size: 14px; font-weight: 900; color: #f59e0b;
+    display: flex; align-items: center; justify-content: center;
+  }
+  &.vft-bike .vft-tick { color: #7c3aed; }
+}
+
+// Input fields
+.vfs-field {
+  display: flex; align-items: center; gap: 12px;
+  margin: 0 20px; background: #f8fafc;
+  border: 2px solid #e2e8f0; border-radius: 16px;
+  padding: 0 16px; min-height: 54px;
+  transition: border-color 0.2s;
+  &:focus-within { border-color: #f59e0b; background: white; }
+
+  .vff-icon { font-size: 22px; color: #d97706; flex-shrink: 0; }
+  .vff-input {
+    --background: transparent; --color: #1e293b;
+    --placeholder-color: #cbd5e1;
+    --padding-start: 0; --padding-end: 0;
+    font-size: 16px; font-weight: 700; flex: 1;
+  }
+}
+
+// Actions
+.vfs-actions {
+  display: flex; gap: 12px; padding: 20px 20px 24px;
+  .vfa-cancel {
+    flex: 1; height: 54px; border: none; border-radius: 16px;
+    background: #f1f5f9; color: #64748b;
+    font-size: 15px; font-weight: 800; cursor: pointer;
+    transition: transform 0.15s;
+    &:active { transform: scale(0.97); }
+  }
+  .vfa-save {
+    flex: 2; height: 54px; border: none; border-radius: 16px;
+    background: linear-gradient(135deg, #d97706, #f59e0b);
+    color: white; font-size: 15px; font-weight: 800; cursor: pointer;
+    display: flex; align-items: center; justify-content: center; gap: 8px;
+    box-shadow: 0 6px 20px rgba(217,119,6,0.4);
+    transition: transform 0.15s;
+    &:active { transform: scale(0.97); }
+    ion-icon { font-size: 20px; }
+  }
+}
+
+// ══ Body ══
 .veh-body { padding: 16px; }
 
-.floor-section { margin-bottom: 8px; }
-
-.floor-label {
-  display: flex; align-items: center; gap: 8px;
-  font-size: 11px; font-weight: 800; color: #64748b;
-  text-transform: uppercase; letter-spacing: 1.2px;
-  margin: 20px 0 12px;
-  .fl-dot { width: 7px; height: 7px; border-radius: 50%; background: #f59e0b; flex-shrink: 0; }
-  .fl-count { margin-left: auto; font-size: 11px; font-weight: 700; color: #94a3b8; text-transform: none; letter-spacing: 0; }
+// Add FAB button in list view
+.veh-add-fab {
+  display: flex; align-items: center; justify-content: center; gap: 8px;
+  background: linear-gradient(135deg, #d97706, #f59e0b);
+  color: white; border-radius: 16px; padding: 14px;
+  font-size: 15px; font-weight: 800; cursor: pointer;
+  box-shadow: 0 4px 16px rgba(217,119,6,0.35);
+  margin-bottom: 16px; transition: transform 0.15s;
+  &:active { transform: scale(0.98); }
+  ion-icon { font-size: 22px; }
 }
 
-// ── Flat blocks grid ──
-.blocks-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+// Empty state
+.veh-empty {
+  text-align: center; padding: 48px 24px;
+  .ve-emoji { font-size: 52px; margin-bottom: 12px; }
+  .ve-title { font-size: 18px; font-weight: 800; color: #1e293b; }
+  .ve-sub { font-size: 13px; color: #94a3b8; margin-top: 6px; }
+}
 
-.flat-block {
+// ── List cards ──
+.vlc {
+  display: flex; align-items: center; gap: 14px;
+  background: white; border-radius: 20px; padding: 16px;
+  margin-bottom: 10px; box-shadow: 0 2px 14px rgba(0,0,0,0.07);
+  border-left: 4px solid transparent; transition: transform 0.15s;
+  &:active { transform: scale(0.98); }
+  &.vlc-car  { border-left-color: #f59e0b; }
+  &.vlc-bike { border-left-color: #7c3aed; }
+
+  .vlc-icon {
+    width: 56px; height: 56px; border-radius: 18px; flex-shrink: 0;
+    display: flex; align-items: center; justify-content: center; font-size: 30px;
+    &.vlc-icon-car  { background: linear-gradient(135deg, #fef3c7, #fde68a); }
+    &.vlc-icon-bike { background: linear-gradient(135deg, #ede9fe, #ddd6fe); }
+  }
+  .vlc-body { flex: 1; min-width: 0; }
+  .vlc-plate { font-size: 18px; font-weight: 900; color: #1e293b; letter-spacing: 1px; }
+  .vlc-model { font-size: 13px; color: #64748b; margin-top: 2px; }
+  .vlc-meta {
+    display: flex; align-items: center; gap: 4px;
+    font-size: 12px; color: #94a3b8; margin-top: 5px;
+    ion-icon { font-size: 12px; }
+  }
+  .vlc-right { display: flex; flex-direction: column; align-items: flex-end; gap: 8px; }
+  .vlc-badge {
+    font-size: 10px; font-weight: 800; padding: 4px 10px; border-radius: 20px;
+    &.vlc-badge-car  { background: #fef3c7; color: #d97706; }
+    &.vlc-badge-bike { background: #ede9fe; color: #7c3aed; }
+  }
+  .vlc-del {
+    width: 34px; height: 34px; border: none; border-radius: 10px;
+    background: #fee2e2; color: #dc2626; cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    ion-icon { font-size: 16px; }
+  }
+}
+
+// ── Block view ──
+.vb-floor { margin-bottom: 8px; }
+
+.vb-floor-hdr {
+  display: flex; align-items: center; gap: 8px;
+  margin: 20px 0 12px;
+  .vb-dot { width: 7px; height: 7px; border-radius: 50%; background: #f59e0b; flex-shrink: 0; }
+  .vb-floor-lbl { font-size: 11px; font-weight: 800; color: #64748b; text-transform: uppercase; letter-spacing: 1.2px; }
+  .vb-floor-cnt { margin-left: auto; font-size: 11px; font-weight: 700; color: #94a3b8; }
+}
+
+.vb-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+
+.vb-flat {
   background: white; border-radius: 18px; padding: 14px;
   box-shadow: 0 2px 12px rgba(0,0,0,0.07);
   border: 2px solid #f1f5f9;
-  transition: border-color 0.2s;
+  &.vb-has { border-color: #fde68a; }
 
-  &.has-vehicles { border-color: #fde68a; }
-  &.empty-block { opacity: 0.7; }
-
-  .fb-header {
-    display: flex; align-items: center; gap: 6px; margin-bottom: 4px;
-    .fb-flat-no { font-size: 15px; font-weight: 900; color: #1e293b; flex: 1; }
-    .fb-type {
-      font-size: 9px; font-weight: 800; padding: 2px 6px; border-radius: 20px;
-      &.bhk1 { background: #ede9fe; color: #6d28d9; }
-      &.bhk2 { background: #dbeafe; color: #1d4ed8; }
-    }
-    .fb-add-btn {
-      width: 26px; height: 26px; border: none; border-radius: 8px;
-      background: linear-gradient(135deg, #f59e0b, #d97706);
-      color: white; cursor: pointer; flex-shrink: 0;
-      display: flex; align-items: center; justify-content: center;
-      ion-icon { font-size: 16px; }
-    }
+  .vbf-top { display: flex; align-items: center; gap: 6px; margin-bottom: 4px; }
+  .vbf-no { font-size: 14px; font-weight: 900; color: #1e293b; flex: 1; }
+  .vbf-type {
+    font-size: 9px; font-weight: 800; padding: 2px 6px; border-radius: 20px;
+    &.vbft-1 { background: #ede9fe; color: #6d28d9; }
+    &.vbft-2 { background: #dbeafe; color: #1d4ed8; }
+  }
+  .vbf-add {
+    width: 26px; height: 26px; border: none; border-radius: 8px;
+    background: linear-gradient(135deg, #f59e0b, #d97706);
+    color: white; cursor: pointer; flex-shrink: 0;
+    display: flex; align-items: center; justify-content: center;
+    ion-icon { font-size: 16px; }
   }
 
-  .fb-owner {
-    font-size: 11px; color: #64748b; margin-bottom: 10px;
-    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
-  }
+  .vbf-owner { font-size: 11px; color: #94a3b8; margin-bottom: 8px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 
-  .fb-vehicles { display: flex; flex-direction: column; gap: 6px; }
+  .vbf-vehicles { display: flex; flex-direction: column; gap: 6px; }
 
-  .fb-veh-row {
+  .vbf-veh {
     display: flex; align-items: center; gap: 8px;
-    background: #fafafa; border-radius: 10px; padding: 8px 10px;
-    border-left: 3px solid transparent;
-    &.vr-car { border-left-color: #f59e0b; }
-    &.vr-bike { border-left-color: #7c3aed; }
-
-    .vr-icon { font-size: 18px; flex-shrink: 0; }
-    .vr-info { flex: 1; min-width: 0; }
-    .vr-plate { font-size: 12px; font-weight: 800; color: #1e293b; letter-spacing: 0.5px; }
-    .vr-model { font-size: 10px; color: #94a3b8; margin-top: 1px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-    .vr-del {
+    border-radius: 10px; padding: 8px 10px;
+    &.vbfv-car  { background: #fffbeb; border: 1px solid #fde68a; }
+    &.vbfv-bike { background: #f5f3ff; border: 1px solid #ddd6fe; }
+    .vbfv-ico { font-size: 18px; flex-shrink: 0; }
+    .vbfv-info { flex: 1; min-width: 0; }
+    .vbfv-plate { font-size: 12px; font-weight: 800; color: #1e293b; letter-spacing: 0.5px; }
+    .vbfv-model { font-size: 10px; color: #94a3b8; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .vbfv-del {
       width: 26px; height: 26px; border: none; border-radius: 7px;
       background: #fee2e2; color: #dc2626; cursor: pointer; flex-shrink: 0;
       display: flex; align-items: center; justify-content: center;
@@ -106,10 +332,9 @@
     }
   }
 
-  .fb-empty {
-    display: flex; align-items: center; gap: 6px;
+  .vbf-empty {
+    display: flex; align-items: center; gap: 5px;
     color: #cbd5e1; font-size: 11px; font-weight: 600;
-    padding: 6px 0;
-    ion-icon { font-size: 18px; }
+    ion-icon { font-size: 15px; }
   }
 }
