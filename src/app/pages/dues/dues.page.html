@@ -4,6 +4,7 @@
     <ion-title>Past Dues</ion-title>
   </ion-toolbar>
 </ion-header>
+
 <ion-content [fullscreen]="true" class="dues-content">
   <div class="dues-hero">
     <div class="dh-c1"></div><div class="dh-c2"></div>
@@ -12,12 +13,7 @@
       <div class="dh-amount">₹{{ totalOutstanding | number }}</div>
       <div class="dh-sub">{{ filtered.length }} flat{{ filtered.length !== 1 ? 's' : '' }} with pending dues</div>
     </div>
-    <ion-searchbar
-      [(ngModel)]="searchTerm"
-      placeholder="Search flat no. or owner..."
-      debounce="200"
-      class="dues-searchbar">
-    </ion-searchbar>
+    <ion-searchbar [(ngModel)]="searchTerm" placeholder="Search flat no. or owner..." debounce="200" class="dues-searchbar"></ion-searchbar>
     <div class="dh-seg-wrap">
       <ion-segment [(ngModel)]="filterWing" (ionChange)="loadDues()" class="dues-seg">
         <ion-segment-button value="ALL">All</ion-segment-button>
@@ -26,12 +22,14 @@
       </ion-segment>
     </div>
   </div>
+
   <div class="dues-body">
     <div *ngIf="filtered.length === 0" class="empty-state">
       <div class="es-icon">{{ searchTerm ? '🔍' : '🎉' }}</div>
       <div class="es-title">{{ searchTerm ? 'No results' : 'All Clear!' }}</div>
       <div class="es-sub">{{ searchTerm ? 'No dues found for "' + searchTerm + '"' : 'No pending dues found' }}</div>
     </div>
+
     <div *ngFor="let fd of filtered; let i = index" class="due-card">
       <div class="dc-header">
         <div class="dc-rank">#{{ i + 1 }}</div>
@@ -48,15 +46,94 @@
         </div>
       </div>
       <div class="dc-chips">
-        <span *ngFor="let item of fd.items"
-              class="dc-chip"
-              [class.dc-chip-charge]="item.isCharge">
+        <span *ngFor="let item of fd.items" class="dc-chip" [class.dc-chip-charge]="item.isCharge">
           {{ item.label }} · ₹{{ item.amount | number }}
         </span>
       </div>
-      <button class="dc-pay-btn" (click)="payDue(fd)"><ion-icon name="card-outline"></ion-icon> Pay Dues</button>
-      <button class="dc-goto-btn" (click)="go('pay-dues')"><ion-icon name="open-outline"></ion-icon> Pay via Pay Page</button>
+      <div class="dc-actions">
+        <button class="dc-pay-btn" (click)="openPaySheet(fd)">
+          <ion-icon name="card-outline"></ion-icon> Pay Dues
+        </button>
+        <button class="dc-receipt-btn" (click)="go('receipt')">
+          <ion-icon name="receipt-outline"></ion-icon> Receipts
+        </button>
+      </div>
     </div>
     <div style="height:80px"></div>
   </div>
 </ion-content>
+
+<!-- Payment Bottom Sheet Overlay -->
+<div class="pay-overlay" *ngIf="payingDue" (click)="closePaySheet()"></div>
+
+<div class="pay-sheet" *ngIf="payingDue">
+  <div class="ps-handle"></div>
+
+  <!-- Header -->
+  <div class="ps-header">
+    <div class="ps-header-info">
+      <div class="ps-flat">{{ payingDue.flat.flatNo }}</div>
+      <div class="ps-owner">{{ payingDue.flat.ownerName || 'Owner not set' }} · Wing {{ payingDue.flat.wing }}</div>
+    </div>
+    <div class="ps-total-due">
+      <div class="ps-due-lbl">Total Due</div>
+      <div class="ps-due-amt">₹{{ payingDue.totalDue | number }}</div>
+    </div>
+    <button class="ps-close" (click)="closePaySheet()"><ion-icon name="close-outline"></ion-icon></button>
+  </div>
+
+  <!-- Amount + Date Row -->
+  <div class="ps-row">
+    <div class="ps-field ps-field-amount">
+      <div class="ps-field-lbl"><ion-icon name="cash-outline"></ion-icon> Payment Amount</div>
+      <div class="ps-amount-wrap">
+        <span class="ps-rupee">₹</span>
+        <input type="number" class="ps-amount-input" [(ngModel)]="payAmount" (ngModelChange)="onAmountChange()" placeholder="0" />
+      </div>
+    </div>
+    <div class="ps-field ps-field-date">
+      <div class="ps-field-lbl"><ion-icon name="calendar-outline"></ion-icon> Payment Date</div>
+      <input type="date" class="ps-date-input" [(ngModel)]="payDate" />
+    </div>
+  </div>
+
+  <!-- Note -->
+  <div class="ps-field ps-field-note">
+    <div class="ps-field-lbl"><ion-icon name="create-outline"></ion-icon> Note (optional)</div>
+    <input type="text" class="ps-note-input" [(ngModel)]="payNote" placeholder="e.g. Cash payment, Cheque no..." />
+  </div>
+
+  <!-- Items -->
+  <div class="ps-items-label">Adjust Across Months</div>
+  <div class="ps-items">
+    <div *ngFor="let item of payingDue.items" class="ps-item" [class.ps-item-selected]="item.selected" [class.ps-item-charge]="item.isCharge" (click)="toggleItem(item)">
+      <div class="ps-item-check">
+        <ion-icon [name]="item.selected ? 'checkmark-circle' : 'ellipse-outline'"></ion-icon>
+      </div>
+      <div class="ps-item-info">
+        <div class="ps-item-label">{{ item.label }}</div>
+        <div class="ps-item-full">Full: ₹{{ item.amount | number }}</div>
+      </div>
+      <div class="ps-item-amt" *ngIf="item.selected">
+        <span [class.ps-partial]="item.partialAmount < item.amount">₹{{ item.partialAmount | number }}</span>
+        <span class="ps-partial-tag" *ngIf="item.partialAmount < item.amount">partial</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Summary Bar -->
+  <div class="ps-summary">
+    <div class="ps-sum-left">
+      <span class="ps-sum-count">{{ selectedItems.length }} item(s) selected</span>
+    </div>
+    <div class="ps-sum-right">
+      Paying <strong>₹{{ selectedTotal | number }}</strong>
+    </div>
+  </div>
+
+  <!-- Confirm Button -->
+  <button class="ps-confirm-btn" (click)="confirmPayment()" [disabled]="!selectedItems.length || !payAmount">
+    <ion-icon name="checkmark-circle-outline"></ion-icon>
+    Confirm Payment · ₹{{ selectedTotal | number }}
+  </button>
+</div>

@@ -1,13 +1,15 @@
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
-import { AlertController, MenuController, ToastController } from '@ionic/angular';
+import { MenuController, ToastController } from '@ionic/angular';
 import { SocietyService, Flat, MaintenanceCharge } from '../../services/society.service';
 
 export interface DueItem {
-  key: string;        // month string OR 'charge:id'
+  key: string;
   label: string;
   amount: number;
   isCharge: boolean;
+  selected: boolean;
+  partialAmount: number;
 }
 
 export interface FlatDue {
@@ -28,7 +30,17 @@ export class DuesPage {
   searchTerm = '';
   totalOutstanding = 0;
 
-  constructor(private society: SocietyService, private router: Router, private menu: MenuController, private alertCtrl: AlertController, private toastCtrl: ToastController) {}
+  payingDue: FlatDue | null = null;
+  payAmount: number | null = null;
+  payDate: string = '';
+  payNote: string = '';
+
+  constructor(
+    private society: SocietyService,
+    private router: Router,
+    private menu: MenuController,
+    private toast: ToastController
+  ) {}
 
   ionViewWillEnter() { this.loadDues(); }
 
@@ -39,30 +51,14 @@ export class DuesPage {
 
     this.flatDues = flats.map(flat => {
       const items: DueItem[] = [];
-
-      // Standard unpaid months
       allMonths
         .filter(m => !this.society.isPaid(flat.id, m))
-        .forEach(m => items.push({
-          key: m,
-          label: this.society.getMonthLabel(m),
-          amount: flat.monthlyAmount,
-          isCharge: false
-        }));
-
-      // Unpaid maintenance charges for this wing
+        .forEach(m => items.push({ key: m, label: this.society.getMonthLabel(m), amount: flat.monthlyAmount, isCharge: false, selected: true, partialAmount: flat.monthlyAmount }));
       allCharges
         .filter(c => flat.wing === 'A' ? c.wingA : c.wingB)
         .filter(c => !this.society.isPaid(flat.id, `charge:${c.id}`))
-        .forEach(c => items.push({
-          key: `charge:${c.id}`,
-          label: this.society.getChargeLabel(c),
-          amount: c.amount,
-          isCharge: true
-        }));
-
-      const totalDue = this.society.getTotalDue(flat);
-      return { flat, items, totalDue };
+        .forEach(c => items.push({ key: `charge:${c.id}`, label: this.society.getChargeLabel(c), amount: c.amount, isCharge: true, selected: true, partialAmount: c.amount }));
+      return { flat, items, totalDue: this.society.getTotalDue(flat) };
     }).filter(fd => fd.totalDue > 0).sort((a, b) => b.totalDue - a.totalDue);
 
     this.totalOutstanding = this.flatDues.reduce((s, fd) => s + fd.totalDue, 0);
@@ -80,42 +76,59 @@ export class DuesPage {
     });
   }
 
-  async payDue(fd: FlatDue) {
-    const alert = await this.alertCtrl.create({
-      header: `Pay Dues — ${fd.flat.flatNo}`,
-      subHeader: `${fd.flat.ownerName || 'No owner'} · Total Due: ₹${fd.totalDue.toLocaleString('en-IN')}`,
-      inputs: fd.items.map(item => ({
-        name: 'items', type: 'checkbox' as const,
-        label: `${item.label} — ₹${item.amount.toLocaleString('en-IN')}`,
-        value: item.key, checked: true
-      })),
-      buttons: [
-        { text: 'Cancel', role: 'cancel' },
-        { text: 'Pay Selected', handler: (selectedKeys: string[]) => {
-          if (!selectedKeys?.length) return false;
-          selectedKeys.forEach(key => {
-            const item = fd.items.find(i => i.key === key)!;
-            this.society.addPayment({
-              flatId: fd.flat.id, month: key,
-              amountPaid: item.amount,
-              paidDate: new Date().toISOString(),
-              note: item.isCharge ? item.label : 'Past due payment'
-            });
-          });
-          this.showToast(`✅ ${selectedKeys.length} item(s) paid for ${fd.flat.flatNo}`, 'success');
-          this.loadDues(); return true;
-        }}
-      ]
-    });
-    await alert.present();
+  openPaySheet(fd: FlatDue) {
+    this.payingDue = fd;
+    fd.items.forEach(i => { i.selected = true; i.partialAmount = i.amount; });
+    this.payAmount = fd.items.reduce((s, i) => s + i.amount, 0);
+    const now = new Date();
+    this.payDate = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
+    this.payNote = '';
   }
 
-  getMonthLabel(m: string) { return this.society.getMonthLabel(m); }
+  closePaySheet() { this.payingDue = null; }
+
+  get selectedItems(): DueItem[] { return this.payingDue?.items.filter(i => i.selected) || []; }
+  get selectedTotal(): number { return this.selectedItems.reduce((s, i) => s + i.partialAmount, 0); }
+
+  onAmountChange() {
+    if (!this.payingDue || this.payAmount == null) return;
+    let remaining = +this.payAmount;
+    this.payingDue.items.forEach(i => {
+      if (remaining <= 0) { i.selected = false; i.partialAmount = 0; }
+      else if (remaining >= i.amount) { i.selected = true; i.partialAmount = i.amount; remaining -= i.amount; }
+      else { i.selected = true; i.partialAmount = remaining; remaining = 0; }
+    });
+  }
+
+  toggleItem(item: DueItem) {
+    item.selected = !item.selected;
+    if (!item.selected) item.partialAmount = 0;
+    else item.partialAmount = item.amount;
+    this.payAmount = this.selectedTotal;
+  }
+
+  confirmPayment() {
+    if (!this.payingDue || !this.selectedItems.length) return;
+    const paidDate = this.payDate ? new Date(this.payDate).toISOString() : new Date().toISOString();
+    this.selectedItems.forEach(item => {
+      this.society.addPayment({
+        flatId: this.payingDue!.flat.id,
+        month: item.key,
+        amountPaid: item.partialAmount,
+        paidDate,
+        note: this.payNote || (item.isCharge ? item.label : 'Due payment')
+      });
+    });
+    this.showToast(`✅ Payment recorded for ${this.payingDue.flat.flatNo}`, 'success');
+    this.payingDue = null;
+    this.loadDues();
+  }
+
   openMenu() { this.menu.open('main-menu'); }
   go(page: string) { this.router.navigate(['/app', page]); }
 
   async showToast(message: string, color: string) {
-    const t = await this.toastCtrl.create({ message, duration: 2500, color, position: 'bottom' });
+    const t = await this.toast.create({ message, duration: 2500, color, position: 'bottom' });
     t.present();
   }
 }

@@ -11,7 +11,7 @@ import { SocietyService, MaintenanceCharge, FundConfig } from '../../services/so
 export class ConfigPage {
   charges: MaintenanceCharge[] = [];
   allMonths: string[] = [];
-  fund!: FundConfig;
+  fund: FundConfig = { bankBalance: 0, lastUpdated: '' };
   bankBalanceInput: number | null = null;
   showBankForm = false;
 

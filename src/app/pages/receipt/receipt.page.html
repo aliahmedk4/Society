@@ -49,8 +49,16 @@
       <div class="rdet-label">Payment History</div>
       <div *ngIf="payments.length === 0" class="empty-state"><div class="es-icon">📭</div><div class="es-title">No payments yet</div><div class="es-sub">Payments will appear here once recorded</div></div>
       <div *ngFor="let p of payments" class="pay-card">
-        <div class="pc-top"><div class="pc-month">{{ getMonthLabel(p.month) }}</div><div class="pc-amount">₹{{ p.amountPaid | number }}</div></div>
-        <div class="pc-row"><span class="pc-date">{{ p.paidDate | date:'dd MMM yyyy' }}</span><span class="pc-rcpt">{{ p.receiptNo }}</span></div>
+        <div class="pc-top">
+          <div>
+            <div class="pc-month">{{ getMonthLabel(p.month) }}</div>
+            <div class="pc-date-row"><ion-icon name="calendar-outline"></ion-icon> {{ p.paidDate | date:'dd MMM yyyy, hh:mm a' }}</div>
+          </div>
+          <div class="pc-right">
+            <div class="pc-amount">₹{{ p.amountPaid | number }}</div>
+            <div class="pc-rcpt">{{ p.receiptNo }}</div>
+          </div>
+        </div>
         <div class="pc-note" *ngIf="p.note">{{ p.note }}</div>
         <button class="pc-dl-btn" (click)="printReceipt(p)"><ion-icon name="download-outline"></ion-icon> Download Receipt</button>
       </div>

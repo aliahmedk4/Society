@@ -20,7 +20,14 @@ export class FlatsPage implements OnInit {
   paidThisMonth = 0; unpaidThisMonth = 0; collectedThisMonth = 0;
   bulkMode = false;
   selectedIds: Set<string> = new Set();
+  expandedFloors: Set<number> = new Set(); // default all collapsed
+  /* Inline edit form */
+  editingFlat: Flat | null = null;
+  editForm = { ownerName: '', phone: '', openingBalance: 0, monthlyAmount: 0 };
   vehicleMap: Record<string, Vehicle[]> = {};
+  /* Inline vehicle form */
+  vehicleFlat: Flat | null = null;
+  vehicleForm = { vehicleNo: '', model: '', type: 'car' as 'car' | 'bike' };
 
   constructor(private society: SocietyService, private alertCtrl: AlertController, private toastCtrl: ToastController, private router: Router, private menu: MenuController) {}
 
@@ -63,30 +70,25 @@ export class FlatsPage implements OnInit {
   getVehiclesForFlat(flat: Flat): Vehicle[] { return this.vehicleMap[flat.id] || []; }
 
   async addVehicleToFlat(flat: Flat) {
-    const alert = await this.alertCtrl.create({
-      header: `Add Vehicle — ${flat.flatNo}`,
-      subHeader: flat.ownerName || 'No owner set',
-      inputs: [
-        { name: 'vehicleNo', type: 'text', placeholder: 'Vehicle Number (e.g. GJ01AB1234)' },
-        { name: 'model', type: 'text', placeholder: 'Model (e.g. Honda City)' },
-        { name: 'type', type: 'radio', label: '🚗 Car', value: 'car', checked: true },
-        { name: 'type', type: 'radio', label: '🏍 Bike', value: 'bike' },
-      ],
-      buttons: [
-        { text: 'Cancel', role: 'cancel' },
-        { text: 'Add', handler: (data): boolean => {
-          if (!data.vehicleNo?.trim()) return false;
-          this.society.addVehicle({
-            flatId: flat.id, flatNo: flat.flatNo, ownerName: flat.ownerName,
-            type: data.type || 'car', vehicleNo: data.vehicleNo.trim().toUpperCase(), model: data.model || ''
-          });
-          this.loadFlats();
-          this.showToast(`🚗 Vehicle added to ${flat.flatNo}`, 'success');
-          return true;
-        }}
-      ]
+    this.vehicleFlat = flat;
+    this.vehicleForm = { vehicleNo: '', model: '', type: 'car' };
+  }
+
+  cancelVehicleForm() { this.vehicleFlat = null; }
+
+  saveVehicle() {
+    if (!this.vehicleForm.vehicleNo.trim()) { this.showToast('Enter vehicle number', 'warning'); return; }
+    this.society.addVehicle({
+      flatId: this.vehicleFlat!.id,
+      flatNo: this.vehicleFlat!.flatNo,
+      ownerName: this.vehicleFlat!.ownerName,
+      type: this.vehicleForm.type,
+      vehicleNo: this.vehicleForm.vehicleNo.trim().toUpperCase(),
+      model: this.vehicleForm.model.trim()
     });
-    await alert.present();
+    this.showToast(`🚗 Vehicle added to ${this.vehicleFlat!.flatNo}`, 'success');
+    this.vehicleFlat = null;
+    this.loadFlats();
   }
 
   get isChargeMonth(): boolean { return this.selectedMonth.startsWith('charge:'); }
@@ -106,6 +108,16 @@ export class FlatsPage implements OnInit {
   isPaid(flat: Flat) { return this.society.isPaid(flat.id, this.selectedMonth); }
   getMonthLabel(m: string) { return this.society.getMonthLabel(m); }
   getTotalDue(flat: Flat) { return this.society.getTotalDue(flat); }
+
+  isFloorExpanded(floor: number) { return this.expandedFloors.has(floor); }
+  toggleFloor(floor: number) {
+    this.expandedFloors.has(floor) ? this.expandedFloors.delete(floor) : this.expandedFloors.add(floor);
+  }
+  expandAll()   { this.floors.forEach(f => this.expandedFloors.add(f)); }
+  collapseAll() { this.expandedFloors.clear(); }
+
+  floorPaidCount(floor: number)   { return this.getFlatsForFloor(floor).filter(f => this.isPaid(f)).length; }
+  floorUnpaidCount(floor: number) { return this.getFlatsForFloor(floor).filter(f => !this.isPaid(f)).length; }
 
   toggleBulkMode() { this.bulkMode = !this.bulkMode; this.selectedIds.clear(); }
   toggleSelect(flat: Flat) { if (this.isPaid(flat)) return; this.selectedIds.has(flat.id) ? this.selectedIds.delete(flat.id) : this.selectedIds.add(flat.id); }
@@ -160,25 +172,33 @@ export class FlatsPage implements OnInit {
   }
 
   async editFlat(flat: Flat) {
-    const alert = await this.alertCtrl.create({
-      header: `Edit — ${flat.flatNo}`,
-      inputs: [
-        { name: 'ownerName', type: 'text', placeholder: 'Owner Name', value: flat.ownerName },
-        { name: 'phone', type: 'tel', placeholder: 'Phone', value: flat.phone },
-        { name: 'openingBalance', type: 'number', placeholder: 'Opening Balance', value: flat.openingBalance }
-      ],
-      buttons: [
-        { text: 'Cancel', role: 'cancel' },
-        { text: 'Save', handler: (data) => {
-          const flats = this.society.getFlats();
-          const idx = flats.findIndex(f => f.id === flat.id);
-          flats[idx] = { ...flats[idx], ownerName: data.ownerName, phone: data.phone, openingBalance: +data.openingBalance };
-          this.society.saveFlats(flats); this.loadFlats(); this.showToast('Flat updated', 'success');
-        }}
-      ]
-    });
-    await alert.present();
+    this.editingFlat = flat;
+    this.editForm = {
+      ownerName: flat.ownerName,
+      phone: flat.phone,
+      openingBalance: flat.openingBalance,
+      monthlyAmount: flat.monthlyAmount
+    };
   }
+
+  saveEditFlat() {
+    if (!this.editingFlat) return;
+    const flats = this.society.getFlats();
+    const idx = flats.findIndex(f => f.id === this.editingFlat!.id);
+    flats[idx] = {
+      ...flats[idx],
+      ownerName: this.editForm.ownerName,
+      phone: this.editForm.phone,
+      openingBalance: +this.editForm.openingBalance,
+      monthlyAmount: +this.editForm.monthlyAmount
+    };
+    this.society.saveFlats(flats);
+    this.editingFlat = null;
+    this.loadFlats();
+    this.showToast('Flat updated', 'success');
+  }
+
+  cancelEdit() { this.editingFlat = null; }
 
   async showToast(message: string, color: string) {
     const t = await this.toastCtrl.create({ message, duration: 2000, color, position: 'bottom' });
