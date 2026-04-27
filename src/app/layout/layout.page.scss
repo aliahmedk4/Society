@@ -3,7 +3,8 @@ ion-router-outlet { flex: 1; position: relative; }
 
 .tab-bar {
   position: fixed; bottom: 0; left: 0; right: 0;
-  height: 60px; display: flex;
+  height: calc(60px + env(safe-area-inset-bottom)); display: flex;
+  padding-bottom: env(safe-area-inset-bottom);
   background: #fff; border-top: 1px solid #e2e8f0;
   box-shadow: 0 -4px 20px rgba(0,0,0,0.08); z-index: 9999;
 
